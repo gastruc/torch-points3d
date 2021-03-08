@@ -74,7 +74,7 @@ class PointNet2Factory(ModelFactory):
         else:
             path_to_model = os.path.join(
                 PATH_TO_CONFIG,
-                "encoder_{}_{}.yaml".format(self.num_layers, "ms" if self.kwargs["multiscale"] else "ss"),
+                "encoder_{}_{}.yaml".format(self.num_layers, "ms" if self.kwargs["multiscale"] else "ms"),
             )
             model_config = OmegaConf.load(path_to_model)
         ModelFactory.resolve_model(model_config, self.num_features, self._kwargs)
