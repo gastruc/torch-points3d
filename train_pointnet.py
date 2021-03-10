@@ -72,11 +72,10 @@ class PointNet2CLassifier(torch.nn.Module):
     def backward(self):
          self.loss_class.backward()  
             
-def train_epoch(device):
+def train_epoch(device,train_loader):
     model.to(device)
     model.train()
     tracker.reset("train")
-    train_loader = dataset.train_dataloader
     iter_data_time = time.time()
     for i, data in enumerate(train_loader):
         t_data = time.time() - iter_data_time
@@ -89,11 +88,10 @@ def train_epoch(device):
         if i % 10 == 0:
             tracker.track(model)
             
-def test_epoch(device):
+def test_epoch(device,test_loader):
     model.to(device)
     model.eval()
     tracker.reset("test")
-    test_loader = dataset.test_dataloaders[0]
     iter_data_time = time.time()
     
     for i, data in enumerate(test_loader):
@@ -189,8 +187,8 @@ for u in [512,1024,2048]:
         for i in range(EPOCHS):
             print("=========== EPOCH %i ===========" % i)
             time.sleep(0.5)
-            train_epoch('cuda')
-            test_epoch('cuda')
+            train_epoch('cuda',train_loader)
+            test_epoch('cuda',test_loader)
             if i>=80:
                 somme+=tracker.publish(i)['current_metrics']['acc']
         print((tracker.publish(i)['current_metrics']['acc'],somme/20))
