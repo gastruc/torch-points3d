@@ -142,6 +142,43 @@ for u in [512,1024,2048]:
         os.chdir(logdir)
         
         from torch_points3d.datasets.classification.modelnet import ModelNetDataset
+        yaml_config = """
+        task: classification
+        class: modelnet.ModelNetDataset
+        name: modelnet
+        dataroot: %s
+        number: %s
+        pre_transforms:
+            - transform: NormalizeScale
+            - transform: GridSampling3D
+              lparams: [0.02]
+        train_transforms:
+            - transform: FixedPoints
+              lparams: [%d]
+            - transform: RandomNoise
+            - transform: RandomRotate
+              params:
+                degrees: 180
+                axis: 2
+            - transform: AddFeatsByKeys
+              params:
+                feat_names: [norm]
+                list_add_to_x: [%r]
+                delete_feats: [True]
+        test_transforms:
+            - transform: FixedPoints
+              lparams: [%d]
+            - transform: AddFeatsByKeys
+              params:
+                feat_names: [norm]
+                list_add_to_x: [%r]
+                delete_feats: [True]
+        """ % (os.path.join(DIR, "data"),MODELNET_VERSION, u,USE_NORMAL, v,USE_NORMAL)
+        from omegaconf import OmegaConf
+        params = OmegaConf.create(yaml_config)
+
+
+        
         dataset = ModelNetDataset(params)
         tracker = dataset.get_tracker(False, True)
 
