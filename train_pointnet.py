@@ -140,6 +140,9 @@ for u in [512,1024,2048]:
         logdir = os.path.join(logdir, str(datetime.datetime.now()))
         os.mkdir(logdir)
         os.chdir(logdir)
+        
+        from torch_points3d.datasets.classification.modelnet import ModelNetDataset
+        dataset = ModelNetDataset(params)
         tracker = dataset.get_tracker(False, True)
 
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
