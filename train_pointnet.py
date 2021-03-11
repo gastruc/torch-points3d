@@ -121,8 +121,9 @@ for u in [512,1024,2048]:
             num_workers=NUM_WORKERS,  
             collate_fn=collate_function
         )
-        
-        print(enumerate(train_loader))
+        for i, data in enumerate(train_loader):
+            print(data)
+            break
 
         transform = T.FixedPoints(v)
         dataset = SampledModelNet(dataroot2, name=MODELNET_VERSION, train=True, transform=transform,
@@ -137,7 +138,11 @@ for u in [512,1024,2048]:
             collate_fn=collate_function
         )
         
-        print(enumerate(test_loader))
+        for i, data in enumerate(test_loader):
+            print(data)
+            break
+
+
         logdir = "" # Replace with your own path
         logdir = os.path.join(logdir, str(datetime.datetime.now()))
         os.mkdir(logdir)
