@@ -25,6 +25,7 @@ USE_NORMAL = True #@param {type:"boolean"}
 from torch_points3d.datasets.classification.modelnet import SampledModelNet
 import torch_points3d.core.data_transform as T3D
 import torch_geometric.transforms as T
+from torch_points3d.datasets.batch import SimpleBatch
 
 dataroot1 = os.path.join(DIR, "data/modelnet1")
 dataroot2 = os.path.join(DIR, "data/modelnet2")
