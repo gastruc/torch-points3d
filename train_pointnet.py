@@ -32,7 +32,7 @@ dataroot2 = os.path.join(DIR, "data/modelnet2")
 pre_transform = T.Compose([T.NormalizeScale(), T3D.GridSampling3D(0.02)])
 
 NUM_WORKERS = 4
-BATCH_SIZE = 16
+BATCH_SIZE = 4
 
 from torch_points3d.applications.pointnet2 import PointNet2
 
@@ -138,10 +138,6 @@ for u in [512,1024,2048]:
             num_workers=NUM_WORKERS,  
             collate_fn=collate_function
         )
-        
-        for i, data in enumerate(test_loader):
-            print(data)
-            break
 
 
         logdir = "" # Replace with your own path
