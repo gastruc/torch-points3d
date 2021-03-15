@@ -16,7 +16,6 @@ import time
 import datetime
 import numpy as np
 
-
 np.random.seed(22)
 
 from torch_points3d.applications.pointnet2 import PointNet2
