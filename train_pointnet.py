@@ -197,9 +197,6 @@ for u in [512,1024,2048]:
         )
         print(dataset.train_dataloader)
         print(next(iter(dataset.train_dataloader)))
-        for i, data in enumerate(train_loader):
-            print(len(dataset.train_dataloader.pos.shape))
-            break
 
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
