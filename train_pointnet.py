@@ -14,7 +14,7 @@ import pyvista as pv
 import torch
 import time
 import datetime
-
+from torch_geometric.data import Batch
 DIR = "" 
 
 #@title Choose ModelNet parameters {run: "auto"}
