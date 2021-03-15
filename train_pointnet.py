@@ -122,9 +122,10 @@ for u in [512,1024,2048]:
             num_workers=NUM_WORKERS,  
             collate_fn=collate_function
         )
-        for i, data in enumerate(train_loader):
-            print(data)
-            break
+        
+        print(train_loader)
+        print(iter(train_loader))
+
 
         transform = T.FixedPoints(v)
         dataset = SampledModelNet(dataroot2, name=MODELNET_VERSION, train=True, transform=transform,
@@ -181,11 +182,20 @@ for u in [512,1024,2048]:
         from omegaconf import OmegaConf
         params = OmegaConf.create(yaml_config)
 
-
+        
         
         dataset = ModelNetDataset(params)
         tracker = dataset.get_tracker(False, True)
-
+        # Setup the data loaders
+        dataset.create_dataloaders(
+            model, 
+            batch_size=BATCH_SIZE, 
+            shuffle=True, 
+            num_workers=NUM_WORKERS, 
+            precompute_multi_scale=False
+        )
+        print(dataset.train_dataloaders[0])
+        print(iter(dataset.train_dataloaders[0]))
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
         EPOCHS = 100
