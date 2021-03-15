@@ -127,7 +127,7 @@ for u in [512,1024,2048]:
         print(train_loader)
         print(next(iter(train_loader)))
         for i, data in enumerate(train_loader):
-            print(data)
+            print(len(data.pos.shape))
             break
 
         transform = T.FixedPoints(v)
@@ -199,6 +199,9 @@ for u in [512,1024,2048]:
         )
         print(dataset.train_dataloader)
         print(next(iter(dataset.train_dataloader)))
+        for i, data in enumerate(train_loader):
+            print(len(dataset.train_dataloader.pos.shape))
+            break
 
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
