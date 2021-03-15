@@ -114,7 +114,8 @@ for u in [512,1024,2048]:
         dataset = SampledModelNet(dataroot1, name=MODELNET_VERSION, train=True, transform=transform,
                          pre_transform=pre_transform, pre_filter=None)
 
-        collate_function = lambda datalist: SimpleBatch.from_data_list(datalist)
+        #collate_function = lambda datalist: SimpleBatch.from_data_list(datalist)
+        collate_function = lambda datalist: Batch.from_data_list(datalist)
         train_loader = torch.utils.data.DataLoader(
             dataset, 
             batch_size=BATCH_SIZE, 
@@ -124,9 +125,8 @@ for u in [512,1024,2048]:
         )
         
         print(train_loader)
+        print(next(iter(train_loader)))
         for i, data in enumerate(train_loader):
-            print(data[0].shape)
-            print(data[0])
             print(data)
             break
 
@@ -198,13 +198,8 @@ for u in [512,1024,2048]:
             precompute_multi_scale=False
         )
         print(dataset.train_dataloader)
-        print(iter(dataset.train_dataloader))
-        for i, data in enumerate(dataset.train_dataloader):
-            print(data[0].shape)
-            print(data[0])
-            print(data)
-            break
-        
+        print(next(iter(dataset.train_dataloader)))
+
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
         EPOCHS = 100
