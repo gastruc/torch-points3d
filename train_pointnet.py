@@ -200,7 +200,7 @@ for u in [512,1024,2048]:
         print(dataset.train_dataloader)
         print(iter(dataset.train_dataloader))
         for i, data in enumerate(dataset.train_dataloader):
-            print(data.shape)
+            print(data[0].shape)
             print(data[0])
             print(data)
             break
