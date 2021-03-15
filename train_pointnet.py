@@ -194,8 +194,8 @@ for u in [512,1024,2048]:
             num_workers=NUM_WORKERS, 
             precompute_multi_scale=False
         )
-        print(dataset.train_dataloaders[0])
-        print(iter(dataset.train_dataloaders[0]))
+        print(dataset.train_dataloader)
+        print(iter(dataset.train_dataloader))
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
         EPOCHS = 100
