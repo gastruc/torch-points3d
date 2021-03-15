@@ -125,7 +125,7 @@ for u in [512,1024,2048]:
         
         print(train_loader)
         for i, data in enumerate(train_loader):
-            print(data.shape)
+            print(data[0].shape)
             print(data[0])
             print(data)
             break
