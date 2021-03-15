@@ -14,7 +14,6 @@ import pyvista as pv
 import torch
 import time
 import datetime
-from torch_geometric.data import Batch
 DIR = "" 
 
 #@title Choose ModelNet parameters {run: "auto"}
@@ -114,8 +113,7 @@ for u in [512,1024,2048]:
         dataset = SampledModelNet(dataroot1, name=MODELNET_VERSION, train=True, transform=transform,
                          pre_transform=pre_transform, pre_filter=None)
 
-        #collate_function = lambda datalist: SimpleBatch.from_data_list(datalist)
-        collate_function = lambda datalist: Batch.from_data_list(datalist)
+        collate_function = lambda datalist: SimpleBatch.from_data_list(datalist)
         train_loader = torch.utils.data.DataLoader(
             dataset, 
             batch_size=BATCH_SIZE, 
@@ -210,8 +208,8 @@ for u in [512,1024,2048]:
         for i in range(EPOCHS):
             print("=========== EPOCH %i ===========" % i)
             time.sleep(0.5)
-            train_epoch('cuda',train_loader)
-            test_epoch('cuda',test_loader)
+            train_epoch('cuda',dataset.train_dataloader)
+            test_epoch('cuda',dataset.test_dataloader)
             if i>=80:
                 somme+=tracker.publish(i)['current_metrics']['acc']
         print((tracker.publish(i)['current_metrics']['acc'],somme/20))
