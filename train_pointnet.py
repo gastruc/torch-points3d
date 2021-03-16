@@ -206,7 +206,7 @@ for u in [512,1024,2048]:
             print("=========== EPOCH %i ===========" % i)
             time.sleep(0.5)
             train_epoch('cuda',dataset.train_dataloader)
-            test_epoch('cuda',dataset.test_dataloader)
+            test_epoch('cuda',dataset.test_dataloaders)
             if i>=80:
                 somme+=tracker.publish(i)['current_metrics']['acc']
         print((tracker.publish(i)['current_metrics']['acc'],somme/20))
