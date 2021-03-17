@@ -124,9 +124,6 @@ for u in [512,1024,2048]:
         
         print(train_loader)
         print(next(iter(train_loader)))
-        for i, data in enumerate(train_loader):
-            print(len(data.pos.shape))
-            break
 
         transform = T.FixedPoints(v)
         dataset = SampledModelNet(dataroot2, name=MODELNET_VERSION, train=True, transform=transform,
@@ -205,8 +202,8 @@ for u in [512,1024,2048]:
         for i in range(EPOCHS):
             print("=========== EPOCH %i ===========" % i)
             time.sleep(0.5)
-            train_epoch('cuda',dataset.train_dataloader)
-            test_epoch('cuda',dataset.test_dataloaders)
+            train_epoch('cuda',train_loader)
+            test_epoch('cuda',test_loader)
             if i>=80:
                 somme+=tracker.publish(i)['current_metrics']['acc']
         print((tracker.publish(i)['current_metrics']['acc'],somme/20))
