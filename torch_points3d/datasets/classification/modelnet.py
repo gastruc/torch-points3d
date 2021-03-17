@@ -119,14 +119,14 @@ class ModelNetDataset(BaseDataset):
         if str(number) not in self.AVAILABLE_NUMBERS:
             raise Exception("Only ModelNet10 and ModelNet40 are available")
         self.train_dataset = SampledModelNet(
-            self._data_path,
+            self._data_path+"/modelnet1/",
             name=str(number),
             train=True,
             transform=self.train_transform,
             pre_transform=self.pre_transform,
         )
         self.test_dataset = SampledModelNet(
-            self._data_path,
+            self._data_path+"/modelnet2/",
             name=str(number),
             train=False,
             transform=self.test_transform,
