@@ -105,7 +105,7 @@ def test_epoch(device):
                 iteration=float(time.time() - iter_start_time),
             )
             iter_data_time = time.time()
-"""
+    """
 
 class PointNet2CLassifier(torch.nn.Module):
     def __init__(self):
@@ -156,7 +156,7 @@ for u in [512,1024,2048]:
         model = PointNet2CLassifier()
 
         NUM_WORKERS = 4
-        BATCH_SIZE = 4
+        BATCH_SIZE = 16
 
 
         yaml_config = """
