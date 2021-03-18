@@ -18,7 +18,7 @@ import numpy as np
 
 np.random.seed(22)
 
-from torch_points3d.applications.pointnet2 import PointNet2
+from torch_points3d.applications.pointnet import PointNet2
 
 DIR = ""
 
