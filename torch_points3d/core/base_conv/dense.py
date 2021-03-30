@@ -80,7 +80,6 @@ class BaseDenseConvolutionDownP(BaseConvolution):
         ms_x = []
         for scale_idx in range(self.neighbour_finder.num_scales):
             radius_idx = self.neighbour_finder(pos, new_pos, scale_idx=scale_idx)
-            print(scale_idx,radius_idx.shape)
             ms_x.append(self.conv(x, pos, new_pos, radius_idx, scale_idx))
         new_x = torch.cat(ms_x, 1)
         
