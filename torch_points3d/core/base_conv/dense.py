@@ -82,13 +82,10 @@ class BaseDenseConvolutionDownP(BaseConvolution):
             radius_idx = self.neighbour_finder(pos, new_pos, scale_idx=scale_idx)
             print(scale_idx,radius_idx.shape)
             ms_x.append(self.conv(x, pos, new_pos, radius_idx, scale_idx))
-        print(ms_x[0].shape,ms_x[1].shape,ms_x[2].shape)
         new_x = torch.cat(ms_x, 1)
-        print(x.shape)
-        print(new_x.shape)
         
         if self.sampler._num_to_sample==-1:
-            return(Data(pos=new_pos, x=x))
+            return(Data(pos=new_pos, x=new_x))
         new_data = Data(pos=new_pos, x=new_x)
         if self._save_sampling_id:
             setattr(new_data, "sampling_id_{}".format(self._index), idx[:, :, 0])

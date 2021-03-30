@@ -232,6 +232,6 @@ for u in [2048]:
 
     
 print(l)
-for i in range (500):
-    print('finish')
+sys.stdout.flush()
+
 

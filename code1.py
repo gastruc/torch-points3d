@@ -204,7 +204,7 @@ for u in [128,256,512,1024,2048]:
 
         optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-        EPOCHS = 150
+        EPOCHS = 100
         somme=0
         for i in range(EPOCHS):
             print("=========== EPOCH %i ===========" % i)
@@ -213,13 +213,12 @@ for u in [128,256,512,1024,2048]:
             tracker.publish(i)
             test_epoch('cuda')
             tracker.publish(i)
-            if i>=100:
+            if i>=80:
                 somme+=tracker.publish(i)['current_metrics']['acc']
-        print((tracker.publish(i)['current_metrics']['acc'],somme/50))
-        l1.append((tracker.publish(i)['current_metrics']['acc'],somme/50))
+        print((tracker.publish(i)['current_metrics']['acc'],somme/20))
+        l1.append((tracker.publish(i)['current_metrics']['acc'],somme/20))
     l.append(l1)
 
     
 print(l)
-
-
+sys.stdout.flush()
