@@ -45,24 +45,16 @@ def train_epoch(device):
     train_loader = dataset.train_dataloader
     iter_data_time = time.time()
         
-    with Ctq(train_loader) as tq_train_loader:
-        for i, data in enumerate(tq_train_loader):
-            t_data = time.time() - iter_data_time
-            iter_start_time = time.time()
-            optimizer.zero_grad()
-            data.to(device)
-            model.forward(data)
-            model.backward()
-            optimizer.step()
-            if i % 10 == 0:
-                tracker.track(model)
-
-            tq_train_loader.set_postfix(
-                **tracker.get_metrics(),
-                data_loading=float(t_data),
-                iteration=float(time.time() - iter_start_time),
-            )
-            iter_data_time = time.time()
+    for i, data in enumerate(train_loader):
+        t_data = time.time() - iter_data_time
+        iter_start_time = time.time()
+        optimizer.zero_grad()
+        data.to(device)
+        model.forward(data)
+        model.backward()
+        optimizer.step()
+        if i % 10 == 0:
+            tracker.track(model)
 
 def test_epoch(device):
     model.to(device)
@@ -77,21 +69,6 @@ def test_epoch(device):
         data.to(device)
         model.forward(data)
         tracker.track(model)
-
-    with Ctq(test_loader) as tq_test_loader:
-        for i, data in enumerate(tq_test_loader):
-            t_data = time.time() - iter_data_time
-            iter_start_time = time.time()
-            data.to(device)
-            model.forward(data)           
-            tracker.track(model)
-
-            tq_test_loader.set_postfix(
-                **tracker.get_metrics(),
-                data_loading=float(t_data),
-                iteration=float(time.time() - iter_start_time),
-            )
-            iter_data_time = time.time()
 
 
 class PointNet2CLassifier(torch.nn.Module):
@@ -210,9 +187,7 @@ for u in [128,256,512,1024,2048]:
             print("=========== EPOCH %i ===========" % i)
             time.sleep(0.5)
             train_epoch('cuda')
-            tracker.publish(i)
             test_epoch('cuda')
-            tracker.publish(i)
             if i>=80:
                 somme+=tracker.publish(i)['current_metrics']['acc']
         print((tracker.publish(i)['current_metrics']['acc'],somme/20))
