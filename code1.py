@@ -187,8 +187,9 @@ for u in [128,256,512,1024,2048]:
             for i in range(EPOCHS):
                 print("=========== EPOCH %i ===========" % i)
                 time.sleep(0.5)
-                train_epoch('cpu')
-                test_epoch('cpu')
+                train_epoch('cuda')
+                print('test')
+                test_epoch('cuda')
                 if i>=80:
                     somme+=tracker.publish(i)['current_metrics']['acc']
             print(u,v)
