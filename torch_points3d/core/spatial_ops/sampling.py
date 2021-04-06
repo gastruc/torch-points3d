@@ -98,7 +98,6 @@ class DenseFPSSampler(BaseSampler):
         if len(pos.shape) != 3:
             raise ValueError(" This class is for dense data and expects the pos tensor to be of dimension 2")
         if self._get_num_to_sample(pos.shape[1])==-1:
-            print(pos.shape[0],pos.shape[1])
             return(tp.furthest_point_sample(pos, pos.shape[1]))
         return tp.furthest_point_sample(pos, self._get_num_to_sample(pos.shape[1]))
 
