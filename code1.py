@@ -30,12 +30,6 @@ from torch_points3d.datasets.classification.modelnet import SampledModelNet
 import torch_points3d.core.data_transform as T3D
 import torch_geometric.transforms as T
 
-dataroot = os.path.join(DIR, "data/modelnet")
-pre_transform = T.Compose([T.NormalizeScale(), T3D.GridSampling3D(0.02)])
-dataset = SampledModelNet(dataroot, name=MODELNET_VERSION, train=True, transform=None,
-                 pre_transform=pre_transform, pre_filter=None)
-dataset[0]
-
 from torch_points3d.metrics.colored_tqdm import Coloredtqdm as Ctq
 
 def train_epoch(device):
