@@ -121,7 +121,7 @@ for u in [128,256,512,1024,2048]:
             model = PointNet2CLassifier()
 
             NUM_WORKERS = 4
-            BATCH_SIZE = 3
+            BATCH_SIZE = 4
 
 
             yaml_config = """
@@ -182,15 +182,13 @@ for u in [128,256,512,1024,2048]:
 
             optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-            EPOCHS = 2
+            EPOCHS = 100
             somme=0
             for i in range(EPOCHS):
                 print("=========== EPOCH %i ===========" % i)
                 time.sleep(0.5)
-                train_epoch('cpu')
-                print('test')
-                test_epoch('cpu')
-                print('finish')
+                train_epoch('cuda')
+                test_epoch('cuda')
                 if i>=80:
                     somme+=tracker.publish(i)['current_metrics']['acc']
             print(u,v)
