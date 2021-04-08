@@ -174,6 +174,7 @@ for u in [128,256,512,1024,2048]:
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
     EPOCHS = 100
+    print('bonne version')
     for i in range(EPOCHS):
         print("=========== EPOCH %i ===========" % i)
         time.sleep(0.5)
