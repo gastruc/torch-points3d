@@ -115,7 +115,7 @@ for u in [128,256,512,1024,2048]:
             model = PointNet2CLassifier()
 
             NUM_WORKERS = 4
-            BATCH_SIZE = 4
+            BATCH_SIZE = 3
 
 
             yaml_config = """
