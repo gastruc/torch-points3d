@@ -109,14 +109,80 @@ l=[]
 
 for u in [128,256,512,1024,2048]:
     l1=[]
-    for v in [128,256,512,1024,2048]:
+    model = PointNet2CLassifier()
+    
+    NUM_WORKERS = 4
+    BATCH_SIZE = 3
+
+
+    yaml_config = """
+            task: classification
+            class: modelnet.ModelNetDataset
+            name: modelnet
+            dataroot: %s
+            number: %s
+            pre_transforms:
+                - transform: NormalizeScale
+                - transform: GridSampling3D
+                  lparams: [0.02]
+            train_transforms:
+                - transform: FixedPoints
+                  lparams: [%d]
+                - transform: RandomNoise
+                - transform: RandomRotate
+                  params:
+                    degrees: 180
+                    axis: 2
+                - transform: AddFeatsByKeys
+                  params:
+                    feat_names: [norm]
+                    list_add_to_x: [%r]
+                    delete_feats: [True]
+            test_transforms:
+                - transform: FixedPoints
+                  lparams: [%d]
+                - transform: AddFeatsByKeys
+                  params:
+                    feat_names: [norm]
+                    list_add_to_x: [%r]
+                    delete_feats: [True]
+            """ % (os.path.join(DIR, "data"),MODELNET_VERSION, u,USE_NORMAL, u,USE_NORMAL)
+
+    from omegaconf import OmegaConf
+    params = OmegaConf.create(yaml_config)
+
+                # Instantiate dataset
+    from torch_points3d.datasets.classification.modelnet import ModelNetDataset
+    dataset = ModelNetDataset(params)
+
+                # Setup the data loaders
+    dataset.create_dataloaders(
+                model, 
+                batch_size=BATCH_SIZE, 
+                shuffle=True, 
+                num_workers=NUM_WORKERS, 
+                precompute_multi_scale=False
+            )
+
+            # Setup the tracker and actiavte tensorboard loging
+    logdir = "" # Replace with your own path
+    logdir = os.path.join(logdir, str(datetime.datetime.now()))
+    os.mkdir(logdir)
+    os.chdir(logdir)
+    tracker = dataset.get_tracker(False, True)
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+
+    EPOCHS = 100
+    print('bonne version')
+    for i in range(EPOCHS):
+        print("=========== EPOCH %i ===========" % i)
+        time.sleep(0.5)
+        train_epoch('cuda')
+
+    for v in [128,256,512,1024]:
         if not((u,v) in [(128,128),(128,256)]):
             print(u,v)
-            model = PointNet2CLassifier()
-
-            NUM_WORKERS = 4
-            BATCH_SIZE = 3
-
 
             yaml_config = """
             task: classification
@@ -176,19 +242,10 @@ for u in [128,256,512,1024,2048]:
 
             optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-            EPOCHS = 100
-            somme=0
-            for i in range(EPOCHS):
-                print("=========== EPOCH %i ===========" % i)
-                time.sleep(0.5)
-                train_epoch('cuda')
-                print('test')
-                test_epoch('cuda')
-                if i>=80:
-                    somme+=tracker.publish(i)['current_metrics']['acc']
+            test_epoch('cuda')
             print(u,v)
-            print((tracker.publish(i)['current_metrics']['acc'],somme/20))
-            l1.append((tracker.publish(i)['current_metrics']['acc'],somme/20))
+            print(tracker.publish(0)['current_metrics']['acc'])
+            l1.append(tracker.publish(0)['current_metrics']['acc'])
     l.append(l1)
 
     
