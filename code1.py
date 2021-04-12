@@ -180,8 +180,8 @@ for u in [128,256,512,1024,2048]:
         time.sleep(0.5)
         train_epoch('cuda')
 
-    for v in [128,256,512,1024]:
-        if not((u,v) in [(128,128),(128,256)]):
+    for v in [128,256,512]:
+        if not((u,v) in []):
             print(u,v)
 
             yaml_config = """
