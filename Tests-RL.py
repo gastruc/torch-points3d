@@ -44,7 +44,9 @@ def train_epoch(device):
         iter_start_time = time.time()
         print(type(data))
         print(data['x'].shape)
-        print(data['y'])
+        #data2={}
+        for j in range (len(BATCH_SIZE)):
+            data['x'][j]=data['x'][j][:128]
         optimizer.zero_grad()
         data.to(device)
         model.forward(data)
