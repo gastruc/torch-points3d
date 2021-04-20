@@ -43,11 +43,8 @@ def train_epoch(device):
         t_data = time.time() - iter_data_time
         iter_start_time = time.time()
         print(type(data))
-        print(data['x'])
+        print(data['x'].shape)
         print(data['y'])
-        print(data['pos'])
-        print(data['gridsize'])
-        print(data['x'][0])
         optimizer.zero_grad()
         data.to(device)
         model.forward(data)
