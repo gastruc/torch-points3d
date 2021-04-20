@@ -30,6 +30,8 @@ from torch_points3d.datasets.classification.modelnet import SampledModelNet
 import torch_points3d.core.data_transform as T3D
 import torch_geometric.transforms as T
 
+from torch_points3d.datasets.batch import SimpleBatch
+
 from torch_points3d.metrics.colored_tqdm import Coloredtqdm as Ctq
 
 def train_epoch(device):
@@ -45,6 +47,7 @@ def train_epoch(device):
         print(type(data))
         print(data['x'].shape)
         #data2={}
+        SimpleBatch.from_data_list([])
         for j in range (BATCH_SIZE):
             data['x'][j]=data['x'][j][:128]
         optimizer.zero_grad()
