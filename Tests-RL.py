@@ -47,7 +47,7 @@ def train_epoch(device):
         print(type(data))
         print(data.keys)
         data2={'x':data['x'][0][:128],'y':data['y'][0],'pos':data['pos'][0][:128]}
-        data2=SimpleBatch.from_data_list(data2)
+        data2=SimpleBatch.from_data_list([data2])
         
         print(type(data2))
         print(data2.keys)
