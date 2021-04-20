@@ -45,7 +45,7 @@ def train_epoch(device):
         print(type(data))
         print(data['x'].shape)
         #data2={}
-        for j in range (len(BATCH_SIZE)):
+        for j in range (BATCH_SIZE):
             data['x'][j]=data['x'][j][:128]
         optimizer.zero_grad()
         data.to(device)
