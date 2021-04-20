@@ -46,7 +46,8 @@ def train_epoch(device):
         iter_start_time = time.time()
         print(type(data))
         print(data.keys)
-        data2={'x':data['x'][0][:128],'y':data['y'][0],'pos':data['pos'][0][:128]}
+        print(data['grid_size'])
+        data2={'x':data['x'][0][:128],'y':data['y'][0],'pos':data['pos'][0][:128],'grid_size':data['grid_size'][0]}
         data2=SimpleBatch.from_data_list([data2])
         
         print(type(data2))
