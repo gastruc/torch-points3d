@@ -45,12 +45,12 @@ def train_epoch(device):
         t_data = time.time() - iter_data_time
         iter_start_time = time.time()
         print(type(data))
-        print(data['x'].shape)
-        data2=SimpleBatch.from_data_list([data['x'],data['y'],data['pos'],data['gridsize']])
+        print(data.keys)
+        data2={'x':data['x'][0][:128],'y':data['y'][0],'pos':data['pos'][0][:128]}
+        data2=SimpleBatch.from_data_list(data2)
         
         print(type(data2))
         print(data2.keys)
-        
         for j in range (BATCH_SIZE):
             data['x'][j]=data['x'][j][:128]
         optimizer.zero_grad()
