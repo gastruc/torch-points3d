@@ -43,7 +43,7 @@ def train_epoch(device):
         t_data = time.time() - iter_data_time
         iter_start_time = time.time()
         print(type(data))
-        print(data.shape)
+        print(data[0])
         optimizer.zero_grad()
         data.to(device)
         model.forward(data)
@@ -176,7 +176,6 @@ for u in [512,1024,2048]:
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
     EPOCHS = 100
-    print('bonne version')
     for i in range(EPOCHS):
         print("=========== EPOCH %i ===========" % i)
         time.sleep(0.5)
