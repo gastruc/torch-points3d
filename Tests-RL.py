@@ -46,8 +46,11 @@ def train_epoch(device):
         iter_start_time = time.time()
         print(type(data))
         print(data['x'].shape)
-        #data2={}
-        SimpleBatch.from_data_list([])
+        data2=SimpleBatch.from_data_list([data['x'],data['y'],data['pos'],data['gridsize']])
+        
+        print(type(data2))
+        print(data2.keys)
+        
         for j in range (BATCH_SIZE):
             data['x'][j]=data['x'][j][:128]
         optimizer.zero_grad()
