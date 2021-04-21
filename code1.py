@@ -107,7 +107,7 @@ class PointNet2CLassifier(torch.nn.Module):
         
 l=[]
 
-for u in [512,1024,2048]:
+for u in [128,256]:
     l1=[]
     model = PointNet2CLassifier()
     
@@ -179,75 +179,7 @@ for u in [512,1024,2048]:
         print("=========== EPOCH %i ===========" % i)
         time.sleep(0.5)
         train_epoch('cuda')
-
-    for v in [128,256,512]:
-        if not((u,v) in []):
-            print(u,v)
-
-            yaml_config = """
-            task: classification
-            class: modelnet.ModelNetDataset
-            name: modelnet
-            dataroot: %s
-            number: %s
-            pre_transforms:
-                - transform: NormalizeScale
-                - transform: GridSampling3D
-                  lparams: [0.02]
-            train_transforms:
-                - transform: FixedPoints
-                  lparams: [%d]
-                - transform: RandomNoise
-                - transform: RandomRotate
-                  params:
-                    degrees: 180
-                    axis: 2
-                - transform: AddFeatsByKeys
-                  params:
-                    feat_names: [norm]
-                    list_add_to_x: [%r]
-                    delete_feats: [True]
-            test_transforms:
-                - transform: FixedPoints
-                  lparams: [%d]
-                - transform: AddFeatsByKeys
-                  params:
-                    feat_names: [norm]
-                    list_add_to_x: [%r]
-                    delete_feats: [True]
-            """ % (os.path.join(DIR, "data"),MODELNET_VERSION, u,USE_NORMAL, v,USE_NORMAL)
-
-            from omegaconf import OmegaConf
-            params = OmegaConf.create(yaml_config)
-
-                # Instantiate dataset
-            from torch_points3d.datasets.classification.modelnet import ModelNetDataset
-            dataset = ModelNetDataset(params)
-
-                # Setup the data loaders
-            dataset.create_dataloaders(
-                model, 
-                batch_size=BATCH_SIZE, 
-                shuffle=True, 
-                num_workers=NUM_WORKERS, 
-                precompute_multi_scale=False
-            )
-
-            # Setup the tracker and actiavte tensorboard loging
-            logdir = "" # Replace with your own path
-            logdir = os.path.join(logdir, str(datetime.datetime.now()))
-            os.mkdir(logdir)
-            os.chdir(logdir)
-            tracker = dataset.get_tracker(False, True)
-
-            optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-
-            test_epoch('cuda')
-            print(u,v)
-            print(tracker.publish(0)['current_metrics']['acc'])
-            l1.append(tracker.publish(0)['current_metrics']['acc'])
-    l.append(l1)
+    
+    torch.save(model,"modèle_"+str(u))
 
     
-print(l)
-sys.stdout.flush()
