@@ -38,11 +38,11 @@ from torch_points3d.metrics.colored_tqdm import Coloredtqdm as Ctq
 
 def get_list(tensor):
     l1,l2,l3=[],[],[]
-    norme0 = [tensor[0,i,0]**2+tensor[0,i,1]**2+tensor[0,i,2]**2,i for i in range (len(tensor[0]))]
+    norme0 = [(tensor[0,i,0]**2+tensor[0,i,1]**2+tensor[0,i,2]**2,i) for i in range (len(tensor[0]))]
     norme0.sort()
-    norme1 = [tensor[1,i,0]**2+tensor[1,i,1]**2+tensor[1,i,2]**2,i for i in range (len(tensor[0]))]
+    norme1 = [(tensor[1,i,0]**2+tensor[1,i,1]**2+tensor[1,i,2]**2,i) for i in range (len(tensor[0]))]
     norme1.sort()
-    norme2 = [tensor[2,i,0]**2+tensor[2,i,1]**2+tensor[2,i,2]**2,i for i in range (len(tensor[0]))]
+    norme2 = [(tensor[2,i,0]**2+tensor[2,i,1]**2+tensor[2,i,2]**2,i) for i in range (len(tensor[0]))]
     norme2.sort()
     for i in range (len(norme0)):
         u,v=norme0[i]
