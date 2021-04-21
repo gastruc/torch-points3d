@@ -44,13 +44,15 @@ def get_list(tensor):
     norme1.sort()
     norme2 = [(tensor[2,i,0]**2+tensor[2,i,1]**2+tensor[2,i,2]**2,i) for i in range (len(tensor[0]))]
     norme2.sort()
-    for i in range (len(norme0)):
+    i=-1
+    for i in range (128):
         u,v=norme0[i]
         l1.append(v)
         u,v=norme1[i]
         l2.append(v)
         u,v=norme2[i]
         l3.append(v)
+        i-=1
     return (l1,l2,l3)
     
 
