@@ -34,6 +34,37 @@ from torch_points3d.datasets.batch import SimpleBatch
 
 from torch_points3d.metrics.colored_tqdm import Coloredtqdm as Ctq
 
+
+def batch_to_batch(data):
+    r"""Constructs a batch object from a python list holding
+    :class:`torch_geometric.data.Data` objects. 
+        """
+
+    keys = ['x','y','pos','grid_size']
+
+    batch = SimpleBatch()
+    batch.__data_class__ = data.__class__
+
+    for key in keys:
+        batch[key] = []
+
+    for key in data.keys:
+            item = data[key]
+            batch[key].append(item)
+
+    for key in batch.keys:
+        item = batch[key][0]
+        if (
+                torch.is_tensor(item)
+                or isinstance(item, int)
+                or isinstance(item, float)
+            ):
+            batch[key] = torch.stack(batch[key])
+        else:
+            raise ValueError("Unsupported attribute type")
+
+    return batch.contiguous()
+
 def train_epoch(device):
     model.to(device)
     model.train()
@@ -46,9 +77,9 @@ def train_epoch(device):
         iter_start_time = time.time()
         print(type(data))
         print(data.keys)
-        print(data['grid_size'])
-        data2={'x':data['x'][0][:128],'y':data['y'][0],'pos':data['pos'][0][:128],'grid_size':data['grid_size'][0]}
-        data2=SimpleBatch.from_data_list([data2])
+
+        
+        data2=batch_to_batch(data)
         
         print(type(data2))
         print(data2.keys)
