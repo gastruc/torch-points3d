@@ -80,7 +80,8 @@ def train_epoch(device):
     for i, data in enumerate(train_loader):
         t_data = time.time() - iter_data_time
         iter_start_time = time.time()
-       
+        print(data['x'].shape)
+        print(type(data['x']))
         data2=batch_to_batch(data)
         
         optimizer.zero_grad()
