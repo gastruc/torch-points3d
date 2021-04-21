@@ -55,13 +55,7 @@ def batch_to_batch(data):
             batch[key].append(item)
         else:
             item = data[key]
-            print(data[key].shape)
-            print(type(data[key][0]))
-            nul=torch.zeros([3,128,3])
-            for i in range (3):
-                for j in range (128):
-                    nul[i][j]=item[i][j]
-            batch[key].append(nul)
+            batch[key].append(item[:,:128,:])
 
     for key in batch.keys:
         item = batch[key][0]
