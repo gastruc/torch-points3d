@@ -46,17 +46,14 @@ def batch_to_batch(data):
     batch = SimpleBatch()
     batch.__data_class__ = data.__class__
 
-    for key in keys:
-        batch[key] = []
-
     for key in data.keys:
         if key in ['y','grid_size']:
             item = data[key]
-            batch[key].append(item)
+            batch[key]=item
         else:
             item = data[key]
             print(item.shape)
-            batch[key].append(item[:,:128,:])
+            batch[key]=item[:,:128,:]
 
     for key in batch.keys:
         item = batch[key][0]
