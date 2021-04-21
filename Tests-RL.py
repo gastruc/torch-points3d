@@ -36,6 +36,10 @@ from torch_points3d.datasets.batch import SimpleBatch
 from torch_points3d.metrics.colored_tqdm import Coloredtqdm as Ctq
 
 
+#def get_list(tensor):
+    
+
+
 def batch_to_batch(data):
     r"""Constructs a batch object from a python list holding
     :class:`torch_geometric.data.Data` objects. 
@@ -52,7 +56,8 @@ def batch_to_batch(data):
             batch[key]=item
         else:
             item = data[key]
-            batch[key]=item[:,:128,:]
+            batch[key]=torch.cat((item[0,:128,:],item[1,:128,:],item[2,:128,:]),axis=0)
+            #batch[key]=item[:,:128,:]
     return batch.contiguous()
     """
     for key in batch.keys:
