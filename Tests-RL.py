@@ -17,6 +17,7 @@ import datetime
 import numpy as np
 import torch
 
+
 np.random.seed(22)
 
 from torch_points3d.applications.pointnet import PointNet2
@@ -57,7 +58,7 @@ def batch_to_batch(data):
             item = data[key]
             print(data[key].shape)
             print(type(data[key][0]))
-            item=torch.from_numpy([item[i][:128] for i in range (len(item))])
+            item=torch.from_numpy(np.array([item[i][:128] for i in range (len(item))]))
             batch[key].append(item)
 
     for key in batch.keys:
