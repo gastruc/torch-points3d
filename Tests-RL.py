@@ -55,7 +55,7 @@ def batch_to_batch(data):
             print(item.shape)
             batch[key]=item[:,:128,:]
     return batch.contiguous()
-"""
+    """
     for key in batch.keys:
         item = batch[key][0]
         if (
@@ -66,8 +66,8 @@ def batch_to_batch(data):
             batch[key] = torch.stack(batch[key])
         else:
             raise ValueError("Unsupported attribute type")
-"""
-    return batch.contiguous()
+    """
+    
 
 def train_epoch(device):
     model.to(device)
