@@ -15,6 +15,7 @@ import torch
 import time
 import datetime
 import numpy as np
+import torch
 
 np.random.seed(22)
 
@@ -55,7 +56,7 @@ def batch_to_batch(data):
         else:
             item = data[key]
             item=[item[i][:128] for i in range (len(item))]
-            batch[key].append(item)
+            batch[key].append(torch.FloatTensor(item))
 
     for key in batch.keys:
         item = batch[key][0]
