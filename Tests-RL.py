@@ -56,7 +56,7 @@ def batch_to_batch(data):
             batch[key]=item
         else:
             item = data[key]
-            batch[key]=torch.cat((torch.unsqueeze(tensor[0,L1,:],0),torch.unsqueeze(tensor[1,L1,:],0), torch.unsqueeze(tensor[2,L1,:],0)),axis=0)
+            batch[key]=torch.cat((torch.unsqueeze(item[0,:128,:],0),torch.unsqueeze(item[1,:128,:],0), torch.unsqueeze(item[2,:128,:],0)),axis=0)
             #batch[key]=item[:,:128,:]
     return batch.contiguous()
     """
