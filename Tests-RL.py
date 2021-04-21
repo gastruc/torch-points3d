@@ -55,6 +55,7 @@ def batch_to_batch(data):
             batch[key].append(item)
         else:
             item = data[key]
+            print(item.shape)
             batch[key].append(item[:,:128,:])
 
     for key in batch.keys:
