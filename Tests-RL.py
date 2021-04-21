@@ -55,8 +55,10 @@ def batch_to_batch(data):
             batch[key].append(item)
         else:
             item = data[key]
-            item=[item[i][:128] for i in range (len(item))]
-            batch[key].append(torch.FloatTensor(item))
+            print(data[key].shape)
+            print(type(data[key][0]))
+            item=torch.FloatTensor([item[i][:128] for i in range (len(item))])
+            batch[key].append(item)
 
     for key in batch.keys:
         item = batch[key][0]
