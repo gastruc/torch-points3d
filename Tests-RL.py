@@ -54,6 +54,7 @@ def batch_to_batch(data):
             item = data[key]
             print(item.shape)
             batch[key]=item[:,:128,:]
+    return batch.contiguous()
 """
     for key in batch.keys:
         item = batch[key][0]
