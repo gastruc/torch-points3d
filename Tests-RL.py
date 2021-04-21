@@ -49,7 +49,12 @@ def batch_to_batch(data):
         batch[key] = []
 
     for key in data.keys:
+        if key in ['y','gris_size']:
             item = data[key]
+            batch[key].append(item)
+        else:
+            item = data[key]
+            item=[item[i][:128] for i in range (len(item))]
             batch[key].append(item)
 
     for key in batch.keys:
@@ -75,19 +80,12 @@ def train_epoch(device):
     for i, data in enumerate(train_loader):
         t_data = time.time() - iter_data_time
         iter_start_time = time.time()
-        print(type(data))
-        print(data.keys)
-
-        
+       
         data2=batch_to_batch(data)
         
-        print(type(data2))
-        print(data2.keys)
-        for j in range (BATCH_SIZE):
-            data['x'][j]=data['x'][j][:128]
         optimizer.zero_grad()
-        data.to(device)
-        model.forward(data)
+        data2.to(device)
+        model.forward(data2)
         model.backward()
         optimizer.step()
         if i % 10 == 0:
