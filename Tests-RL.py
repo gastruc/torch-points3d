@@ -52,7 +52,6 @@ def batch_to_batch(data):
             batch[key]=item
         else:
             item = data[key]
-            print(item.shape)
             batch[key]=item[:,:128,:]
     return batch.contiguous()
     """
@@ -80,8 +79,7 @@ def train_epoch(device):
         t_data = time.time() - iter_data_time
         iter_start_time = time.time()
         data2=batch_to_batch(data)
-        
-        print(data2.pos.shape)
+      
         optimizer.zero_grad()
         data2.to(device)
         model.forward(data2)
