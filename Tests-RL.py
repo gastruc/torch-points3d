@@ -50,7 +50,7 @@ def batch_to_batch(data):
         batch[key] = []
 
     for key in data.keys:
-        if key in ['y','gris_size']:
+        if key in ['y','grid_size']:
             item = data[key]
             batch[key].append(item)
         else:
