@@ -15,6 +15,7 @@ import torch
 import time
 import datetime
 import numpy as np
+import torch
 
 np.random.seed(22)
 
@@ -30,26 +31,72 @@ from torch_points3d.datasets.classification.modelnet import SampledModelNet
 import torch_points3d.core.data_transform as T3D
 import torch_geometric.transforms as T
 
+from torch_points3d.datasets.batch import SimpleBatch
+
 from torch_points3d.metrics.colored_tqdm import Coloredtqdm as Ctq
 
-def train_epoch(device):
+
+def get_list(tensor):
+    l1,l2,l3=[],[],[]
+    norme0 = [(tensor[0,i,0]**2+tensor[0,i,1]**2+tensor[0,i,2]**2,i) for i in range (len(tensor[0]))]
+    norme0.sort()
+    norme1 = [(tensor[1,i,0]**2+tensor[1,i,1]**2+tensor[1,i,2]**2,i) for i in range (len(tensor[0]))]
+    norme1.sort()
+    norme2 = [(tensor[2,i,0]**2+tensor[2,i,1]**2+tensor[2,i,2]**2,i) for i in range (len(tensor[0]))]
+    norme2.sort()
+    i=-1
+    for i in range (128):
+        u,v=norme0[i]
+        l1.append(v)
+        u,v=norme1[i]
+        l2.append(v)
+        u,v=norme2[i]
+        l3.append(v)
+        i-=1
+    return (l1,l2,l3)
+    
+
+
+def batch_to_batch(data):
+    r"""Constructs a batch object from a python list holding
+    :class:`torch_geometric.data.Data` objects. 
+        """
+
+    keys = ['x','y','pos','grid_size']
+
+    batch = SimpleBatch()
+    batch.__data_class__ = data.__class__
+    
+    l1,l2,l3=get_list(data['x'])
+
+    for key in data.keys:
+        if key in ['y','grid_size']:
+            item = data[key]
+            batch[key]=item
+        else:
+            item = data[key]
+            batch[key]=torch.cat((torch.unsqueeze(item[0,l1,:],0),torch.unsqueeze(item[1,l2,:],0), torch.unsqueeze(item[2,l3,:],0)),axis=0)
+            #batch[key]=item[:,:128,:]
+    return batch.contiguous()
+
+model = torch.load(PATH)
+model.eval()
+
+def test_epoch1(device):
     model.to(device)
-    model.train()
-    tracker.reset("train")
-    train_loader = dataset.train_dataloader
+    model.eval()
+    tracker.reset("test")
+    test_loader = dataset.test_dataloaders[0]
     iter_data_time = time.time()
-        
-    for i, data in enumerate(train_loader):
+    
+    for i, data in enumerate(test_loader):
         t_data = time.time() - iter_data_time
         iter_start_time = time.time()
-        optimizer.zero_grad()
+        data=batch_to_batch(data)
         data.to(device)
         model.forward(data)
-        model.backward()
-        optimizer.step()
-        if i % 10 == 0:
-            tracker.track(model)
-
+        tracker.track(model)
+        
 def test_epoch(device):
     model.to(device)
     model.eval()
@@ -63,54 +110,8 @@ def test_epoch(device):
         data.to(device)
         model.forward(data)
         tracker.track(model)
-
-
-class PointNet2CLassifier(torch.nn.Module):
-    def __init__(self):
-        super().__init__() 
-        self.encoder = PointNet2("encoder", input_nc= 3 * USE_NORMAL,output_nc = int(MODELNET_VERSION), num_layers=3,kwargs="multiscale")
-        self.log_softmax = torch.nn.LogSoftmax(dim=-1)
     
-    @property
-    def conv_type(self):
-        """ This is needed by the dataset to infer which batch collate should be used"""
-        return self.encoder.conv_type
-    
-    def get_output(self):
-        """ This is needed by the tracker to get access to the ouputs of the network"""
-        return self.output
-    
-    def get_labels(self):
-        """ Needed by the tracker in order to access ground truth labels"""
-        return self.labels
-    
-    def get_current_losses(self):
-        """ Entry point for the tracker to grab the loss """
-        return {"loss_class": float(self.loss_class)}
-    
-    def forward(self, data):
-        # Set labels for the tracker
-        self.labels = data.y.squeeze()
-
-        # Forward through the network
-        data_out = self.encoder(data)
-        self.output = self.log_softmax(data_out.x.squeeze())
-
-        # Set loss for the backward pass
-        self.loss_class = torch.nn.functional.nll_loss(self.output, self.labels)
-    
-    def backward(self):
-         self.loss_class.backward()
-           
-
-        
-        
-l=[]
-
 for u in [128,256]:
-    l1=[]
-    model = PointNet2CLassifier()
-    
     NUM_WORKERS = 4
     BATCH_SIZE = 3
 
@@ -146,7 +147,7 @@ for u in [128,256]:
                     feat_names: [norm]
                     list_add_to_x: [%r]
                     delete_feats: [True]
-            """ % (os.path.join(DIR, "data"),MODELNET_VERSION, u,USE_NORMAL, u,USE_NORMAL)
+            """ % (os.path.join(DIR, "data"),MODELNET_VERSION, 128,USE_NORMAL, u,USE_NORMAL)
 
     from omegaconf import OmegaConf
     params = OmegaConf.create(yaml_config)
@@ -170,18 +171,3 @@ for u in [128,256]:
     os.mkdir(logdir)
     os.chdir(logdir)
     tracker = dataset.get_tracker(False, True)
-
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-
-    EPOCHS = 150
-    print('bonne version')
-    for i in range(EPOCHS):
-        print("=========== EPOCH %i ===========" % i)
-        time.sleep(0.5)
-        train_epoch('cuda')
-        
-        
-    checkpoint = {'state_dict': model.state_dict(),'optimizer' :optimizer.state_dict()}
-    torch.save(checkpoint, "modele_"+str(u)+".pth")
-
-    
