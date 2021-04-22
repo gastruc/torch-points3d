@@ -173,13 +173,13 @@ for u in [128,256]:
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-    EPOCHS = 100
+    EPOCHS = 150
     print('bonne version')
     for i in range(EPOCHS):
         print("=========== EPOCH %i ===========" % i)
         time.sleep(0.5)
         train_epoch('cuda')
     
-    torch.save(model,"modèle_"+str(u))
+    torch.save(model,"modele_"+str(u)+".pth")
 
     
