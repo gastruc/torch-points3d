@@ -179,9 +179,7 @@ for u in [128,256]:
         print("=========== EPOCH %i ===========" % i)
         time.sleep(0.5)
         train_epoch('cuda')
-        
-        
-    checkpoint = {'state_dict': model.state_dict(),'optimizer' :optimizer.state_dict()}
-    torch.save(checkpoint, "modele_"+str(u)+".pth")
+
+    torch.save(model.state_dict(), "modele_"+str(u)+".pth")
 
     

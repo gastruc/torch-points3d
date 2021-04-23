@@ -79,8 +79,43 @@ def batch_to_batch(data):
             #batch[key]=item[:,:128,:]
     return batch.contiguous()
 
-model = torch.load(PATH)
-model.eval()
+class PointNet2CLassifier(torch.nn.Module):
+    def __init__(self):
+        super().__init__() 
+        self.encoder = PointNet2("encoder", input_nc= 3 * USE_NORMAL,output_nc = int(MODELNET_VERSION), num_layers=3,kwargs="multiscale")
+        self.log_softmax = torch.nn.LogSoftmax(dim=-1)
+    
+    @property
+    def conv_type(self):
+        """ This is needed by the dataset to infer which batch collate should be used"""
+        return self.encoder.conv_type
+    
+    def get_output(self):
+        """ This is needed by the tracker to get access to the ouputs of the network"""
+        return self.output
+    
+    def get_labels(self):
+        """ Needed by the tracker in order to access ground truth labels"""
+        return self.labels
+    
+    def get_current_losses(self):
+        """ Entry point for the tracker to grab the loss """
+        return {"loss_class": float(self.loss_class)}
+    
+    def forward(self, data):
+        # Set labels for the tracker
+        self.labels = data.y.squeeze()
+
+        # Forward through the network
+        data_out = self.encoder(data)
+        self.output = self.log_softmax(data_out.x.squeeze())
+
+        # Set loss for the backward pass
+        self.loss_class = torch.nn.functional.nll_loss(self.output, self.labels)
+    
+    def backward(self):
+         self.loss_class.backward()
+
 
 def test_epoch1(device):
     model.to(device)
@@ -110,7 +145,9 @@ def test_epoch(device):
         data.to(device)
         model.forward(data)
         tracker.track(model)
-    
+
+model = PointNet2CLassifier()
+model.load_state_dict(torch.load("modele_"+str(128)+".pth"))
 for u in [128,256]:
     NUM_WORKERS = 4
     BATCH_SIZE = 3
@@ -171,3 +208,8 @@ for u in [128,256]:
     os.mkdir(logdir)
     os.chdir(logdir)
     tracker = dataset.get_tracker(False, True)
+    
+
+    
+    
+    
