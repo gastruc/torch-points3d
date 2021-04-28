@@ -236,7 +236,7 @@ for u in [128]:
 
                 # Setup the data loaders
     dataset.create_dataloaders(
-                model, 
+                model_128, 
                 batch_size=BATCH_SIZE, 
                 shuffle=True, 
                 num_workers=NUM_WORKERS, 
@@ -291,7 +291,7 @@ for u in [128]:
 
                 # Setup the data loaders
     dataset.create_dataloaders(
-                model, 
+                model_128, 
                 batch_size=BATCH_SIZE, 
                 shuffle=True, 
                 num_workers=NUM_WORKERS, 
