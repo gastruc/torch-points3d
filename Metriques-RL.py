@@ -42,6 +42,7 @@ def get_list(tensor,k):
     norme0.sort()
     norme1 = [(tensor[1,i,0]**2+tensor[1,i,1]**2+tensor[1,i,2]**2,i) for i in range (len(tensor[0]))]
     norme1.sort()
+    print(tensor.shape)
     norme2 = [(tensor[2,i,0]**2+tensor[2,i,1]**2+tensor[2,i,2]**2,i) for i in range (len(tensor[2]))]
     norme2.sort()
     i=-1
