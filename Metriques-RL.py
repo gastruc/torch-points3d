@@ -133,12 +133,13 @@ def test_epoch1_128(device,random,furthest):
     iter_data_time = time.time()
     
     for i, data in enumerate(test_loader):
-        t_data = time.time() - iter_data_time
-        iter_start_time = time.time()
-        data=batch_to_batch(data,random,furthest)
-        data.to(device)
-        model_128.forward(data)
-        tracker.track(model_128)
+        if len(data['x'])==3:
+            t_data = time.time() - iter_data_time
+            iter_start_time = time.time()
+            data=batch_to_batch(data,random,furthest)
+            data.to(device)
+            model_128.forward(data)
+            tracker.track(model_128)
         
 def test_epoch_128(device):
     model_128.to(device)
