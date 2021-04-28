@@ -36,7 +36,7 @@ from torch_points3d.datasets.batch import SimpleBatch
 from torch_points3d.metrics.colored_tqdm import Coloredtqdm as Ctq
 
 
-def get_list(tensor):
+def get_list(tensor,k):
     l1,l2,l3=[],[],[]
     norme0 = [(tensor[0,i,0]**2+tensor[0,i,1]**2+tensor[0,i,2]**2,i) for i in range (len(tensor[0]))]
     norme0.sort()
@@ -45,7 +45,7 @@ def get_list(tensor):
     norme2 = [(tensor[2,i,0]**2+tensor[2,i,1]**2+tensor[2,i,2]**2,i) for i in range (len(tensor[0]))]
     norme2.sort()
     i=-1
-    for i in range (128):
+    for i in range (k):
         u,v=norme0[i]
         l1.append(v)
         u,v=norme1[i]
