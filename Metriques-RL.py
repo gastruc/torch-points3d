@@ -42,7 +42,6 @@ def get_list(tensor,k):
     norme0.sort()
     norme1 = [(tensor[1,i,0]**2+tensor[1,i,1]**2+tensor[1,i,2]**2,i) for i in range (len(tensor[0]))]
     norme1.sort()
-    print(tensor.shape)
     norme2 = [(tensor[2,i,0]**2+tensor[2,i,1]**2+tensor[2,i,2]**2,i) for i in range (len(tensor[2]))]
     norme2.sort()
     i=-1
@@ -164,12 +163,13 @@ def test_epoch1_256(device):
     iter_data_time = time.time()
     
     for i, data in enumerate(test_loader):
-        t_data = time.time() - iter_data_time
-        iter_start_time = time.time()
-        data=batch_to_batch(data)
-        data.to(device)
-        model_256.forward(data)
-        tracker.track(model_256)
+        if len(data['x'])==3:
+            t_data = time.time() - iter_data_time
+            iter_start_time = time.time()
+            data=batch_to_batch(data)
+            data.to(device)
+            model_256.forward(data)
+            tracker.track(model_256)
         
 def test_epoch_256(device):
     model_256.to(device)
