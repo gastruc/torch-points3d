@@ -38,7 +38,6 @@ from torch_points3d.metrics.colored_tqdm import Coloredtqdm as Ctq
 
 def get_list(tensor,k):
     l1,l2,l3=[],[],[]
-    print(tensor.shape)
     norme0 = [(tensor[0,i,0]**2+tensor[0,i,1]**2+tensor[0,i,2]**2,i) for i in range (len(tensor[0]))]
     norme0.sort()
     norme1 = [(tensor[1,i,0]**2+tensor[1,i,1]**2+tensor[1,i,2]**2,i) for i in range (len(tensor[0]))]
@@ -149,12 +148,13 @@ def test_epoch_128(device):
     iter_data_time = time.time()
     
     for i, data in enumerate(test_loader):
-        t_data = time.time() - iter_data_time
-        iter_start_time = time.time()
-        data.to(device)
-        model_128.forward(data)
-        tracker.track(model_128)
-        
+        if len(data['x'])==3:
+            t_data = time.time() - iter_data_time
+            iter_start_time = time.time()
+            data.to(device)
+            model_128.forward(data)
+            tracker.track(model_128)
+
 def test_epoch1_256(device):
     model_256.to(device)
     model_256.eval()
