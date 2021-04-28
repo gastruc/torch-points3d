@@ -54,10 +54,13 @@ def get_list(tensor):
         l3.append(v)
         i-=1
     return (l1,l2,l3)
+
+def get_list_random(k,l):
+    return (list(np.random.randint(l, size=k)),list(np.random.randint(l, size=k)),list(np.random.randint(l, size=k)))
     
 
 
-def batch_to_batch(data):
+def batch_to_batch(data,random,furthest):
     r"""Constructs a batch object from a python list holding
     :class:`torch_geometric.data.Data` objects. 
         """
@@ -67,7 +70,10 @@ def batch_to_batch(data):
     batch = SimpleBatch()
     batch.__data_class__ = data.__class__
     
-    l1,l2,l3=get_list(data['x'])
+    l1,l2,l3=get_list(data['x'],furthest)
+    print(len(data['x'][0])
+    l11,l22,l33=get_list_random(random,len(data['x'][0]))
+    l1,l2,l3=l1+l11,l2+l22,l3+l33
 
     for key in data.keys:
         if key in ['y','grid_size']:
@@ -78,6 +84,9 @@ def batch_to_batch(data):
             batch[key]=torch.cat((torch.unsqueeze(item[0,l1,:],0),torch.unsqueeze(item[1,l2,:],0), torch.unsqueeze(item[2,l3,:],0)),axis=0)
             #batch[key]=item[:,:128,:]
     return batch.contiguous()
+
+
+
 
 class PointNet2CLassifier(torch.nn.Module):
     def __init__(self):
@@ -117,9 +126,38 @@ class PointNet2CLassifier(torch.nn.Module):
          self.loss_class.backward()
 
 
-def test_epoch1(device):
-    model.to(device)
-    model.eval()
+def test_epoch1_128(device,random,furthest):
+    model_128.to(device)
+    model_128.eval()
+    tracker.reset("test")
+    test_loader = dataset.test_dataloaders[0]
+    iter_data_time = time.time()
+    
+    for i, data in enumerate(test_loader):
+        t_data = time.time() - iter_data_time
+        iter_start_time = time.time()
+        data=batch_to_batch(data,random,furthest)
+        data.to(device)
+        model_128.forward(data)
+        tracker.track(model)
+        
+def test_epoch_128(device):
+    model_128.to(device)
+    model_128.eval()
+    tracker.reset("test")
+    test_loader = dataset.test_dataloaders[0]
+    iter_data_time = time.time()
+    
+    for i, data in enumerate(test_loader):
+        t_data = time.time() - iter_data_time
+        iter_start_time = time.time()
+        data.to(device)
+        model_128.forward(data)
+        tracker.track(model)
+        
+def test_epoch1_256(device):
+    model_256.to(device)
+    model_256.eval()
     tracker.reset("test")
     test_loader = dataset.test_dataloaders[0]
     iter_data_time = time.time()
@@ -129,12 +167,12 @@ def test_epoch1(device):
         iter_start_time = time.time()
         data=batch_to_batch(data)
         data.to(device)
-        model.forward(data)
+        model_256.forward(data)
         tracker.track(model)
         
-def test_epoch(device):
-    model.to(device)
-    model.eval()
+def test_epoch_256(device):
+    model_256.to(device)
+    model_256.eval()
     tracker.reset("test")
     test_loader = dataset.test_dataloaders[0]
     iter_data_time = time.time()
@@ -143,12 +181,15 @@ def test_epoch(device):
         t_data = time.time() - iter_data_time
         iter_start_time = time.time()
         data.to(device)
-        model.forward(data)
+        model_256.forward(data)
         tracker.track(model)
 
-model = PointNet2CLassifier()
-model.load_state_dict(torch.load("modele_"+str(128)+".pth"))
-for u in [128,256]:
+model_128 = PointNet2CLassifier()
+model_128.load_state_dict(torch.load("modele_"+str(128)+".pth"))
+
+model_256 = PointNet2CLassifier()
+model_256.load_state_dict(torch.load("modele_"+str(256)+".pth"))
+for u in [128]:
     NUM_WORKERS = 4
     BATCH_SIZE = 3
 
@@ -202,12 +243,68 @@ for u in [128,256]:
                 precompute_multi_scale=False
             )
 
-            # Setup the tracker and actiavte tensorboard loging
-    logdir = "" # Replace with your own path
-    logdir = os.path.join(logdir, str(datetime.datetime.now()))
-    os.mkdir(logdir)
-    os.chdir(logdir)
     tracker = dataset.get_tracker(False, True)
+    
+    print("Modèle 128:")
+    test_epoch_128('cuda')
+    print(tracker.publish(0)['current_metrics']['acc'])
+    
+    yaml_config = """
+            task: classification
+            class: modelnet.ModelNetDataset
+            name: modelnet
+            dataroot: %s
+            number: %s
+            pre_transforms:
+                - transform: NormalizeScale
+                - transform: GridSampling3D
+                  lparams: [0.02]
+            train_transforms:
+                - transform: FixedPoints
+                  lparams: [%d]
+                - transform: RandomNoise
+                - transform: RandomRotate
+                  params:
+                    degrees: 180
+                    axis: 2
+                - transform: AddFeatsByKeys
+                  params:
+                    feat_names: [norm]
+                    list_add_to_x: [%r]
+                    delete_feats: [True]
+            test_transforms:
+                - transform: FixedPoints
+                  lparams: [%d]
+                - transform: AddFeatsByKeys
+                  params:
+                    feat_names: [norm]
+                    list_add_to_x: [%r]
+                    delete_feats: [True]
+            """ % (os.path.join(DIR, "data"),MODELNET_VERSION, 512,USE_NORMAL, 512,USE_NORMAL)
+
+    from omegaconf import OmegaConf
+    params = OmegaConf.create(yaml_config)
+
+                # Instantiate dataset
+    from torch_points3d.datasets.classification.modelnet import ModelNetDataset
+    dataset = ModelNetDataset(params)
+
+                # Setup the data loaders
+    dataset.create_dataloaders(
+                model, 
+                batch_size=BATCH_SIZE, 
+                shuffle=True, 
+                num_workers=NUM_WORKERS, 
+                precompute_multi_scale=False
+            )
+
+
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 + 128 plus loins:")
+    test_epoch1_128('cuda',128,128)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    
+    
     
 
     
