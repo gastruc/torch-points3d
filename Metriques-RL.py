@@ -190,7 +190,7 @@ model_128 = PointNet2CLassifier()
 model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(128)+".pth"))
 
 model_256 = PointNet2CLassifier()
-#model_256.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(256)+".pth"))
+model_256.load_state_dict(torch.load("2021-04-26 10:28:01.360039/2021-04-26 17:25:16.894236/modele_"+str(256)+".pth"))
 for u in [128]:
     NUM_WORKERS = 4
     BATCH_SIZE = 3
@@ -310,6 +310,63 @@ for u in [128]:
     print("Modèle 128 + 128 plus loins:")
     test_epoch1_128('cuda',128,128)
     print(tracker.publish(0)['current_metrics']['acc'])
+    
+    yaml_config = """
+            task: classification
+            class: modelnet.ModelNetDataset
+            name: modelnet
+            dataroot: %s
+            number: %s
+            pre_transforms:
+                - transform: NormalizeScale
+                - transform: GridSampling3D
+                  lparams: [0.02]
+            train_transforms:
+                - transform: FixedPoints
+                  lparams: [%d]
+                - transform: RandomNoise
+                - transform: RandomRotate
+                  params:
+                    degrees: 180
+                    axis: 2
+                - transform: AddFeatsByKeys
+                  params:
+                    feat_names: [norm]
+                    list_add_to_x: [%r]
+                    delete_feats: [True]
+            test_transforms:
+                - transform: FixedPoints
+                  lparams: [%d]
+                - transform: AddFeatsByKeys
+                  params:
+                    feat_names: [norm]
+                    list_add_to_x: [%r]
+                    delete_feats: [True]
+            """ % (os.path.join(DIR, "data"),MODELNET_VERSION, 256,USE_NORMAL, 256,USE_NORMAL)
+
+    from omegaconf import OmegaConf
+    params = OmegaConf.create(yaml_config)
+
+                # Instantiate dataset
+    from torch_points3d.datasets.classification.modelnet import ModelNetDataset
+    dataset = ModelNetDataset(params)
+
+                # Setup the data loaders
+    dataset.create_dataloaders(
+                model_256, 
+                batch_size=BATCH_SIZE, 
+                shuffle=True, 
+                num_workers=NUM_WORKERS, 
+                precompute_multi_scale=False
+            )
+
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 256:")
+    test_epoch_256('cuda')
+    print(tracker.publish(0)['current_metrics']['acc'])
+    
+    
+    
     
     
     
