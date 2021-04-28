@@ -139,7 +139,7 @@ def test_epoch1_128(device,random,furthest):
         data=batch_to_batch(data,random,furthest)
         data.to(device)
         model_128.forward(data)
-        tracker.track(model)
+        tracker.track(model_128)
         
 def test_epoch_128(device):
     model_128.to(device)
@@ -153,7 +153,7 @@ def test_epoch_128(device):
         iter_start_time = time.time()
         data.to(device)
         model_128.forward(data)
-        tracker.track(model)
+        tracker.track(model_128)
         
 def test_epoch1_256(device):
     model_256.to(device)
@@ -168,7 +168,7 @@ def test_epoch1_256(device):
         data=batch_to_batch(data)
         data.to(device)
         model_256.forward(data)
-        tracker.track(model)
+        tracker.track(model_256)
         
 def test_epoch_256(device):
     model_256.to(device)
@@ -182,7 +182,7 @@ def test_epoch_256(device):
         iter_start_time = time.time()
         data.to(device)
         model_256.forward(data)
-        tracker.track(model)
+        tracker.track(model_256)
 
 model_128 = PointNet2CLassifier()
 model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(128)+".pth"))
