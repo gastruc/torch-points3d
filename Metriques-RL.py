@@ -71,7 +71,6 @@ def batch_to_batch(data,random,furthest):
     batch.__data_class__ = data.__class__
     
     l1,l2,l3=get_list(data['x'],furthest)
-    print(len(data['x'][0]))
     l11,l22,l33=get_list_random(random,len(data['x'][0]))
     l1,l2,l3=l1+l11,l2+l22,l3+l33
 
@@ -298,7 +297,12 @@ for u in [128]:
                 precompute_multi_scale=False
             )
 
-
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 + 128 aléatoires:")
+    test_epoch1_128('cuda',256,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    
+    
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 plus loins:")
     test_epoch1_128('cuda',128,128)
