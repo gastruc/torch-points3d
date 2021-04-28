@@ -71,7 +71,7 @@ def batch_to_batch(data,random,furthest):
     batch.__data_class__ = data.__class__
     
     l1,l2,l3=get_list(data['x'],furthest)
-    print(len(data['x'][0])
+    print(len(data['x'][0]))
     l11,l22,l33=get_list_random(random,len(data['x'][0]))
     l1,l2,l3=l1+l11,l2+l22,l3+l33
 
