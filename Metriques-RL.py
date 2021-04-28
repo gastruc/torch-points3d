@@ -185,10 +185,10 @@ def test_epoch_256(device):
         tracker.track(model)
 
 model_128 = PointNet2CLassifier()
-model_128.load_state_dict(torch.load("modele_"+str(128)+".pth"))
+model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(128)+".pth"))
 
 model_256 = PointNet2CLassifier()
-model_256.load_state_dict(torch.load("modele_"+str(256)+".pth"))
+model_256.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(256)+".pth"))
 for u in [128]:
     NUM_WORKERS = 4
     BATCH_SIZE = 3
