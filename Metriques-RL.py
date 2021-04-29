@@ -73,6 +73,7 @@ def batch_to_batch(data,random,furthest):
     l1,l2,l3=get_list(data['x'],furthest)
     l11,l22,l33=get_list_random(random,len(data['x'][0]))
     l1,l2,l3=l1+l11,l2+l22,l3+l33
+    print(len(l1),len(l2),len(l3))
 
     for key in data.keys:
         if key in ['y','grid_size']:
