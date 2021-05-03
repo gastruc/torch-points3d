@@ -143,7 +143,7 @@ class PointNet2CLassifier(torch.nn.Module):
          self.loss_class.backward()
 
 
-def test_epoch1_128(device,random,furthest):
+def test_epoch1_128(device,random,furthest,furthest_upgraded):
     model_128.to(device)
     model_128.eval()
     tracker.reset("test")
@@ -154,7 +154,7 @@ def test_epoch1_128(device,random,furthest):
         if len(data['x'])==3:
             t_data = time.time() - iter_data_time
             iter_start_time = time.time()
-            data=batch_to_batch(data,random,furthest)
+            data=batch_to_batch(data,random,furthest,furthest_upgraded)
             data.to(device)
             model_128.forward(data)
             tracker.track(model_128)
