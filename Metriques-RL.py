@@ -267,9 +267,8 @@ for u in [128]:
     
     print("Modèle 128:")
     test_epoch_128('cuda')
-    print(tracker.publish(0)['current_metrics'].keys())
     print(tracker.publish(0)['current_metrics']['acc'])
-    print(tracker.publish(0)['current_metrics']['loss'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
     
     yaml_config = """
             task: classification
@@ -324,19 +323,19 @@ for u in [128]:
     print("Modèle 128 + 128 aléatoires:")
     test_epoch1_128('cuda',256,0,0)
     print(tracker.publish(0)['current_metrics']['acc'])
-    print(tracker.publish(0)['current_metrics']['loss'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
     
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 plus loins:")
     test_epoch1_128('cuda',128,128,0)
     print(tracker.publish(0)['current_metrics']['acc'])
-    print(tracker.publish(0)['current_metrics']['loss'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
     
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 plus loins des autres un par un:")
     test_epoch1_128('cuda',128,0,128)
     print(tracker.publish(0)['current_metrics']['acc'])
-    print(tracker.publish(0)['current_metrics']['loss'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
     
     yaml_config = """
             task: classification
@@ -391,7 +390,7 @@ for u in [128]:
     print("Modèle 256:")
     test_epoch_256('cuda')
     print(tracker.publish(0)['current_metrics']['acc'])
-    print(tracker.publish(0)['current_metrics']['loss'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
     
     
     
