@@ -267,6 +267,7 @@ for u in [128]:
     
     print("Modèle 128:")
     test_epoch_128('cuda')
+    print(tracker.publish(0)['current_metrics'].keys())
     print(tracker.publish(0)['current_metrics']['acc'])
     print(tracker.publish(0)['current_metrics']['loss'])
     
@@ -322,7 +323,6 @@ for u in [128]:
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 aléatoires:")
     test_epoch1_128('cuda',256,0,0)
-    print(tracker.publish(0)['current_metrics'].keys())
     print(tracker.publish(0)['current_metrics']['acc'])
     print(tracker.publish(0)['current_metrics']['loss'])
     
