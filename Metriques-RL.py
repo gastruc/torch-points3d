@@ -61,9 +61,9 @@ def get_normes(tensor,i,pos,l):
 
 def get_list_upgraded(tensor,k,l1,l2,l3):
     for i in range (k):
-        norme0 = [(get_normes(tensor,i,0),i,l1) for i in range (len(tensor[0]))]
-        norme1 = [(get_normes(tensor,i,1),i,l2) for i in range (len(tensor[0]))]
-        norme2 = [(get_normes(tensor,i,2),i,l3) for i in range (len(tensor[0]))]
+        norme0 = [(get_normes(tensor,i,0,l1),i) for i in range (len(tensor[0]))]
+        norme1 = [(get_normes(tensor,i,1,l2),i) for i in range (len(tensor[0]))]
+        norme2 = [(get_normes(tensor,i,2,l3),i) for i in range (len(tensor[0]))]
         u,v=max(norme0)
         l1.append(v)
         u,v=max(norme1)
