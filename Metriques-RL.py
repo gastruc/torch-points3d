@@ -45,7 +45,7 @@ def get_list(tensor,k):
     norme2 = [(tensor[2,i,0]**2+tensor[2,i,1]**2+tensor[2,i,2]**2,i) for i in range (len(tensor[2]))]
     norme2.sort()
     i=-1
-    for i in range (k):
+    for j in range (k):
         u,v=norme0[i]
         l1.append(v)
         u,v=norme1[i]
@@ -55,12 +55,29 @@ def get_list(tensor,k):
         i-=1
     return (l1,l2,l3)
 
+def get_normes(tensor,i,pos,l):
+    l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
+    return(sum(l))
+
+def get_list_upgraded(tensor,k,l1,l2,l3):
+    for i in range (k):
+        norme0 = [(get_normes(tensor,i,0),i,l1) for i in range (len(tensor[0]))]
+        norme1 = [(get_normes(tensor,i,1),i,l2) for i in range (len(tensor[0]))]
+        norme2 = [(get_normes(tensor,i,2),i,l3) for i in range (len(tensor[0]))]
+        u,v=max(norme0)
+        l1.append(v)
+        u,v=max(norme1)
+        l2.append(v)
+        u,v=max(norme2)
+        l3.append(v)
+    return (l1,l2,l3)
+
 def get_list_random(k,l):
     return (list(np.random.randint(l, size=k)),list(np.random.randint(l, size=k)),list(np.random.randint(l, size=k)))
     
 
 
-def batch_to_batch(data,random,furthest):
+def batch_to_batch(data,random,furthest,furthest_upgraded):
     r"""Constructs a batch object from a python list holding
     :class:`torch_geometric.data.Data` objects. 
         """
@@ -73,7 +90,7 @@ def batch_to_batch(data,random,furthest):
     l1,l2,l3=get_list(data['x'],furthest)
     l11,l22,l33=get_list_random(random,len(data['x'][0]))
     l1,l2,l3=l1+l11,l2+l22,l3+l33
-    print(len(l1),len(l2),len(l3))
+    l1,l2,l3=get_list_upgraded(data['x'],furthest_upgraded,l1,l2,l3)
 
     for key in data.keys:
         if key in ['y','grid_size']:
@@ -251,6 +268,7 @@ for u in [128]:
     print("Modèle 128:")
     test_epoch_128('cuda')
     print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss'])
     
     yaml_config = """
             task: classification
@@ -303,14 +321,21 @@ for u in [128]:
 
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 aléatoires:")
-    test_epoch1_128('cuda',256,0)
+    test_epoch1_128('cuda',256,0,0)
     print(tracker.publish(0)['current_metrics']['acc'])
-    
+    print(tracker.publish(0)['current_metrics']['loss'])
     
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 plus loins:")
-    test_epoch1_128('cuda',128,128)
+    test_epoch1_128('cuda',128,128,0)
     print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 + 128 plus loins des autres un par un:")
+    test_epoch1_128('cuda',128,0,128)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss'])
     
     yaml_config = """
             task: classification
@@ -365,6 +390,7 @@ for u in [128]:
     print("Modèle 256:")
     test_epoch_256('cuda')
     print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss'])
     
     
     
