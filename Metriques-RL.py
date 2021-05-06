@@ -152,8 +152,7 @@ def test_epoch1_128(device,random,furthest,furthest_upgraded):
     
     for i, data in enumerate(test_loader):
         if len(data['x'])==3:
-            if i%10==0:
-                print(i,time.time() - iter_data_time)
+            print(i,time.time() - iter_data_time)
             t_data = time.time() - iter_data_time
             data=batch_to_batch(data,random,furthest,furthest_upgraded)
             data.to(device)
@@ -322,15 +321,15 @@ for u in [128]:
 
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 aléatoires:")
-    test_epoch1_128('cuda',256,0,0)
-    print(tracker.publish(0)['current_metrics']['acc'])
-    print(tracker.publish(0)['current_metrics']['loss_class'])
+    #test_epoch1_128('cuda',256,0,0)
+    #print(tracker.publish(0)['current_metrics']['acc'])
+    #print(tracker.publish(0)['current_metrics']['loss_class'])
     
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 plus loins:")
-    test_epoch1_128('cuda',128,128,0)
-    print(tracker.publish(0)['current_metrics']['acc'])
-    print(tracker.publish(0)['current_metrics']['loss_class'])
+    #test_epoch1_128('cuda',128,128,0)
+    #print(tracker.publish(0)['current_metrics']['acc'])
+    #print(tracker.publish(0)['current_metrics']['loss_class'])
     
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 plus loins des autres un par un:")
