@@ -152,8 +152,9 @@ def test_epoch1_128(device,random,furthest,furthest_upgraded):
     
     for i, data in enumerate(test_loader):
         if len(data['x'])==3:
+            if i%100==0:
+                print(i,time.time() - iter_data_time)
             t_data = time.time() - iter_data_time
-            iter_start_time = time.time()
             data=batch_to_batch(data,random,furthest,furthest_upgraded)
             data.to(device)
             model_128.forward(data)
