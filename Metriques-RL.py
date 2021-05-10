@@ -56,10 +56,12 @@ def get_list(tensor,k):
     return (l1,l2,l3)
 
 def get_normes(tensor,i,pos,l):
-    l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
+    l=[np.linalg.norm(tensor[pos,i,:]-tensor[pos,j,:]) for j in l]
+    #l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
     return(sum(l))
 
 def get_list_upgraded(tensor,k,l1,l2,l3):
+    iter_data_time = time.time()
     for i in range (k):
         norme0 = [(get_normes(tensor,i,0,l1),i) for i in range (len(tensor[0]))]
         norme1 = [(get_normes(tensor,i,1,l2),i) for i in range (len(tensor[0]))]
@@ -70,6 +72,8 @@ def get_list_upgraded(tensor,k,l1,l2,l3):
         l2.append(v)
         u,v=max(norme2)
         l3.append(v)
+        print("done",time.time() - iter_data_time)
+    print("finish",time.time() - iter_data_time)
     return (l1,l2,l3)
 
 def get_list_random(k,l):
