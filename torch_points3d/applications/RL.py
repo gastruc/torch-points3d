@@ -144,7 +144,9 @@ class PointNet2Encoder(BasePointnet2):
         if not isinstance(self.inner_modules[0], Identity):
             stack_down.append(data)
             data = self.inner_modules[0](data)
-        print(data.shape)
+        print(len(data))
+        print(len(data[0]))
+        print(data[0].shape)
         return(data)
 
         if self.has_mlp_head:
