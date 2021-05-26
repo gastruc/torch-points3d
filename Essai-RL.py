@@ -359,7 +359,11 @@ for u in [128]:
                 num_workers=NUM_WORKERS, 
                 precompute_multi_scale=False
             )
-
+    
+    test_epoch1_128('cuda',128,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 aléatoires:")
     test_epoch1_128('cuda',256,0,0)
