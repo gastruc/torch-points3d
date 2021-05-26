@@ -307,9 +307,9 @@ for u in [128]:
     tracker = dataset.get_tracker(False, True)
     
     print("Modèle 128:")
-    test_epoch_128('cuda')
-    print(tracker.publish(0)['current_metrics']['acc'])
-    print(tracker.publish(0)['current_metrics']['loss_class'])
+    #test_epoch_128('cuda')
+    #print(tracker.publish(0)['current_metrics']['acc'])
+    #print(tracker.publish(0)['current_metrics']['loss_class'])
     
     yaml_config = """
             task: classification
@@ -363,8 +363,8 @@ for u in [128]:
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 aléatoires:")
     test_epoch1_128('cuda',256,0,0)
-    #print(tracker.publish(0)['current_metrics']['acc'])
-    #print(tracker.publish(0)['current_metrics']['loss_class'])
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
     
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 plus loins:")
