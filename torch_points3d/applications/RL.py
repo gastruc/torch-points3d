@@ -147,10 +147,12 @@ class PointNet2Encoder(BasePointnet2):
         print(len(data))
         print(len(data['x']))
         print(len(data['x'][0]))
-        return(data)
 
         if self.has_mlp_head:
             data.x = self.mlp(data.x)
+        print(len(data))
+        print(len(data['x']))
+        print(len(data['x'][0]))
         return data
 
 
