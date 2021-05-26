@@ -115,7 +115,7 @@ def batch_to_batch(data,random,furthest,furthest_upgraded):
 class PointNet2CLassifier(torch.nn.Module):
     def __init__(self):
         super().__init__() 
-        self.encoder = PointNet2("encoder2", input_nc= 3 * USE_NORMAL,output_nc = int(MODELNET_VERSION), num_layers=3,kwargs="multiscale")
+        self.encoder = PointNet2("encoder", input_nc= 3 * USE_NORMAL,output_nc = int(MODELNET_VERSION), num_layers=3,kwargs="multiscale")
         self.log_softmax = torch.nn.LogSoftmax(dim=-1)
     
     @property
