@@ -101,6 +101,7 @@ class BasePointnet2(UnwrappedUnetBasedModel):
             self._has_mlp_head = True
             self._output_nc = kwargs["output_nc"]
             self.mlp = Seq()
+            print("Output:",default_output_nc)
             self.mlp.append(Conv1D(default_output_nc, self._output_nc, bn=True, bias=False))
 
     @property
@@ -144,9 +145,6 @@ class PointNet2Encoder(BasePointnet2):
         if not isinstance(self.inner_modules[0], Identity):
             stack_down.append(data)
             data = self.inner_modules[0](data)
-        print(len(data))
-        print(len(data['x']))
-        print(len(data['x'][0]))
 
         if self.has_mlp_head:
             data.x = self.mlp(data.x)
