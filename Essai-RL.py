@@ -215,7 +215,7 @@ n_actions = 2
 
 policy_net = DQN(1024).to(device)
 
-optimizer = optim.RMSprop(policy_net.parameters())
+optimizer = torch.optim.RMSprop(policy_net.parameters())
 memory = ReplayMemory(200)
 
 
