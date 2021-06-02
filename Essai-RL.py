@@ -403,7 +403,7 @@ for i_episode in range(num_episodes):
         state=batch_to_batch2(data,DEPART)
         for t in count():
             # Select and perform an action
-            action,samp = select_action(state)
+            action,samp = select_action(state,indice)
             next_state, reward= step(general,state,samp,action,classe)
             reward = torch.tensor([reward], device=device)
 
