@@ -120,7 +120,7 @@ class BasePointnet2(UnwrappedUnetBasedModel):
             #data.x = data.x.transpose(1, 2).contiguous()
         #else:
             #data.x = None
-        self.input = data.transpose(1, 2).contiguous()
+        self.input = data.transpose(0,1).contiguous()
 
 
 class PointNet2Encoder(BasePointnet2):
@@ -146,7 +146,7 @@ class PointNet2Encoder(BasePointnet2):
             data = self.inner_modules[0](data)
         return data
         if self.has_mlp_head:
-            data.x = self.mlp(data.x)
+            data = self.mlp(data)
 
         return data
 
