@@ -181,11 +181,12 @@ class DQN(nn.Module):
         data=model_128.extract(x)
         x=torch.unsqueeze(data['x'][[indice]],1)
         x=torch.squeeze(x,3)
-        print(x.shape)
         x=self.conv1(x)
         x = F.relu(self.bn1(x))
+        print(x.shape)
         x=torch.squeeze(data['x'][indice])
         x=torch.cat((x,torch.squeeze(y)),0)
+        print(x.shape)
         x=F.relu(self.head1(x))
         return self.head2(x)
     
