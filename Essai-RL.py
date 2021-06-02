@@ -170,7 +170,7 @@ class DQN(nn.Module):
         self.conv1 = nn.Conv1d(1,1,kernel_size=32,stride=3)
         #self.bn1 = nn.BatchNorm1d(161)
 
-        self.head1 = nn.Linear(161, 256)
+        self.head1 = nn.Linear(164, 256)
         self.head2 = nn.Linear(256, 2)
         
 
