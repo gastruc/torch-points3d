@@ -179,7 +179,7 @@ class DQN(nn.Module):
     def forward(self, x,indice,y):
         x = x.to(device)
         data=model_128.extract(x)
-        x=self.conv1(data['x'][indice])
+        x=self.conv1(data['x'][[indice]])
         x = F.relu(self.bn1(x))
         x=torch.cat((x,y),0)
         x=F.relu(self.head1(x))
