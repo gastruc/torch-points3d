@@ -241,7 +241,7 @@ def select_action(state,indice):
             # found, so we pick action with the larger expected reward.
             samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
             #return policy_net(state,indice,samp).max(1)[1].view(1, 1),samp
-                return torch.argmax(policy_net(state,indice,samp)),samp
+            return torch.argmax(policy_net(state,indice,samp)),samp
     else:
         return torch.tensor([[random.randrange(int(n_actions))]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
 
