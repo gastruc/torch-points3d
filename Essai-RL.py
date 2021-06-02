@@ -167,10 +167,10 @@ class DQN(nn.Module):
 
     def __init__(self, h):
         super(DQN, self).__init__()
-        #self.conv1 = nn.Conv1d(512,h,kernel_size=(1,32))
-        #self.bn1 = nn.BatchNorm1d(h)
+        self.conv1 = nn.Conv1d(512,h,kernel_size=32)
+        self.bn1 = nn.BatchNorm1d(h)
 
-        self.head1 = nn.Linear(512+3, 256)
+        self.head1 = nn.Linear(h+3, 256)
         self.head2 = nn.Linear(256, 2)
         
 
@@ -179,13 +179,13 @@ class DQN(nn.Module):
     def forward(self, x,indice,y):
         x = x.to(device)
         data=model_128.extract(x)
-        #x=self.conv1(data['x'][[indice]])
-        #x = F.relu(self.bn1(x))
+        x=torch.unsqueeze(data['x'][[indice]],1)
+        print(x.shape)
+        x=self.conv1(x)
+        x = F.relu(self.bn1(x))
         x=torch.squeeze(data['x'][indice])
         x=torch.cat((x,torch.squeeze(y)),0)
-        print(x.shape)
         x=F.relu(self.head1(x))
-        print(x.shape)
         return self.head2(x)
     
     
@@ -218,7 +218,7 @@ TARGET_UPDATE = 10
 
 n_actions = 2
 
-policy_net = DQN(1024).to(device)
+policy_net = DQN(128).to(device)
 
 optimizer = torch.optim.RMSprop(policy_net.parameters())
 memory = ReplayMemory(200)
@@ -409,7 +409,7 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice)
-            next_state, reward= step(data,state,samp,action,classe)
+            next_state, reward= step(data,state,samp,action)
             reward = torch.tensor([reward], device=device)
 
             # Store the transition in memory
