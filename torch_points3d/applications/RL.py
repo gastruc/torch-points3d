@@ -136,31 +136,18 @@ class PointNet2Encoder(BasePointnet2):
         self._set_input(data)
         data = self.input
         stack_down = [data]
-        print("1")
-        print(len(data))
-        print(len(data['x']))
-        print(len(data['x'][0]))
         for i in range(len(self.down_modules) - 1):
             data = self.down_modules[i](data)
             stack_down.append(data)
         data = self.down_modules[-1](data)
-        print("2")
-        print(len(data))
-        print(len(data['x']))
-        print(len(data['x'][0]))
+
         if not isinstance(self.inner_modules[0], Identity):
             stack_down.append(data)
             data = self.inner_modules[0](data)
-        print("3")
-        print(len(data))
-        print(len(data['x']))
-        print(len(data['x'][0]))
+        return data
         if self.has_mlp_head:
             data.x = self.mlp(data.x)
-        print("4")
-        print(len(data))
-        print(len(data['x']))
-        print(len(data['x'][0]))
+
         return data
 
 
