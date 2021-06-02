@@ -180,7 +180,7 @@ class DQN(nn.Module):
         x = x.to(device)
         data=model_128.extract(x)
         x=torch.unsqueeze(data['x'][[indice]],1)
-        x=torch.squeeze(x,4)
+        x=torch.squeeze(x,3)
         print(x.shape)
         x=self.conv1(x)
         x = F.relu(self.bn1(x))
