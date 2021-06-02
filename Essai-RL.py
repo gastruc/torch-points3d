@@ -181,7 +181,8 @@ class DQN(nn.Module):
         data=model_128.extract(x)
         #x=self.conv1(data['x'][[indice]])
         #x = F.relu(self.bn1(x))
-        x=torch.cat((data,y),0)
+        data.shape=(512,)
+        x=torch.cat((data['x'][indice],y),0)
         x=F.relu(self.head1(x))
         return self.head2(x)
     
