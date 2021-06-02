@@ -19,6 +19,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import random
+from collections import namedtuple, deque
+from itertools import count
 
 
 np.random.seed(22)
