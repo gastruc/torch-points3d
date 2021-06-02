@@ -182,6 +182,7 @@ class DQN(nn.Module):
         x=torch.unsqueeze(data['x'][[indice]],1)
         x=torch.squeeze(x,3)
         x=self.conv1(x)
+        print(x.shape)
         x=torch.squeeze(x,1)
         x = F.relu(self.bn1(x))
         print(x.shape)
