@@ -183,6 +183,8 @@ class DQN(nn.Module):
         #x = F.relu(self.bn1(x))
         x=torch.squeeze(data['x'][indice])
         print(x.shape)
+        print(y.shape)
+        print(torch.squeeze(y).shape)
         x=torch.cat((x,y),0)
         x=F.relu(self.head1(x))
         return self.head2(x)
