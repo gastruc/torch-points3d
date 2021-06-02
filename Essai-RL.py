@@ -167,10 +167,10 @@ class DQN(nn.Module):
 
     def __init__(self, h):
         super(DQN, self).__init__()
-        self.conv1 = nn.Conv1d(512,h,kernel_size=(1,32))
-        self.bn1 = nn.BatchNorm1d(h)
+        #self.conv1 = nn.Conv1d(512,h,kernel_size=(1,32))
+        #self.bn1 = nn.BatchNorm1d(h)
 
-        self.head1 = nn.Linear(h+3, 256)
+        self.head1 = nn.Linear(512+3, 256)
         self.head2 = nn.Linear(256, 2)
         
 
@@ -179,9 +179,9 @@ class DQN(nn.Module):
     def forward(self, x,indice,y):
         x = x.to(device)
         data=model_128.extract(x)
-        x=self.conv1(data['x'][[indice]])
-        x = F.relu(self.bn1(x))
-        x=torch.cat((x,y),0)
+        #x=self.conv1(data['x'][[indice]])
+        #x = F.relu(self.bn1(x))
+        x=torch.cat((data,y),0)
         x=F.relu(self.head1(x))
         return self.head2(x)
     
