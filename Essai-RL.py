@@ -229,7 +229,8 @@ def select_action(state,indice):
     eps_threshold = EPS_END + (EPS_START - EPS_END) * \
         math.exp(-1. * steps_done / EPS_DECAY)
     steps_done += 1
-    if sample > eps_threshold:
+    #if sample > eps_threshold:
+    if True:
         with torch.no_grad():
             # t.max(1) will return largest column value of each row.
             # second column on max result is index of where max element was
@@ -238,7 +239,7 @@ def select_action(state,indice):
             samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
             return policy_net(state.x[indice],samp).max(1)[1].view(1, 1),samp
     else:
-        return torch.tensor([[random.randrange(n_actions)]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
+        return torch.tensor([[random.randrange(int(n_actions))]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
 
 
 episode_durations = []
@@ -404,7 +405,7 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice)
-            next_state, reward= step(general,state,samp,action,classe)
+            next_state, reward= step(data,state,samp,action,classe)
             reward = torch.tensor([reward], device=device)
 
             # Store the transition in memory
