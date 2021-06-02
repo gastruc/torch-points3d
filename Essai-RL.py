@@ -167,7 +167,7 @@ class DQN(nn.Module):
 
     def __init__(self, h):
         super(DQN, self).__init__()
-        self.conv1 = nn.Conv1d(1,1,kernel_size=32)
+        self.conv1 = nn.Conv1d(1,1,kernel_size=32,stride=3)
         self.bn1 = nn.BatchNorm1d(481)
 
         self.head1 = nn.Linear(h+3, 256)
@@ -184,6 +184,7 @@ class DQN(nn.Module):
         x=self.conv1(x)
         print(x.shape)
         x=torch.squeeze(x,1)
+        x=torch.unsqueeze(x,1)
         x = F.relu(self.bn1(x))
         print(x.shape)
         x=torch.squeeze(x)
