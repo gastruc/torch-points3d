@@ -379,7 +379,7 @@ for i_episode in range(num_episodes):
         data.to(device)
         general=data['x'][indice]
         classe=data['y'][indice]
-        print(max(general))
+        print(max(general.squeeze))
         print(general[0])
         l=list(np.random.randint(len(general), size=DEPART))
         state=general[l,:]
