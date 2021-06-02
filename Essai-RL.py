@@ -167,7 +167,7 @@ class DQN(nn.Module):
 
     def __init__(self, h):
         super(DQN, self).__init__()
-        self.conv1 = nn.Conv1d(512,h,kernel_size=32)
+        self.conv1 = nn.Conv1d(1,h,kernel_size=32)
         self.bn1 = nn.BatchNorm1d(h)
 
         self.head1 = nn.Linear(h+3, 256)
