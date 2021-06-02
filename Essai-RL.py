@@ -223,7 +223,7 @@ memory = ReplayMemory(200)
 steps_done = 0
 
 
-def select_action(state):
+def select_action(state,indice):
     global steps_done
     sample = random.random()
     eps_threshold = EPS_END + (EPS_START - EPS_END) * \
@@ -234,8 +234,9 @@ def select_action(state):
             # t.max(1) will return largest column value of each row.
             # second column on max result is index of where max element was
             # found, so we pick action with the larger expected reward.
+            print("enter")
             samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
-            return policy_net(state,samp).max(1)[1].view(1, 1),samp
+            return policy_net(state.x[indice],samp).max(1)[1].view(1, 1),samp
     else:
         return torch.tensor([[random.randrange(n_actions)]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
 
@@ -364,7 +365,29 @@ def find_neighbor(general,state,samp):
     u=get_min(general,samp)
     
     
+def batch_to_batch2(data,random):
+    r"""Constructs a batch object from a python list holding
+    :class:`torch_geometric.data.Data` objects. 
+        """
+
+    keys = ['x','y','pos','grid_size']
+
+    batch = SimpleBatch()
+    batch.__data_class__ = data.__class__
     
+    l1,l2,l3=get_list_random(random,len(data['x'][0]))
+
+    for key in data.keys:
+        if key in ['y','grid_size']:
+            item = data[key]
+            batch[key]=item
+        else:
+            item = data[key]
+            batch[key]=torch.cat((torch.unsqueeze(item[0,l1,:],0),torch.unsqueeze(item[1,l2,:],0)),axis=0)
+            #batch[key]=item[:,:128,:]
+    return batch.contiguous()
+
+
 
 
 train_loader = dataset.train_dataloader
@@ -375,13 +398,9 @@ for i_episode in range(num_episodes):
     if i_episode%1==0:
         print(i_episode)
     for i, data in enumerate(train_loader):
-        indice=random.randint(0,len(data['x'])-1)
+        indice=random.randint(0,1)
         data.to(device)
-        general=data['x'][indice]
-        classe=data['y'][indice]
-        print(general[0])
-        l=list(np.random.randint(len(general), size=DEPART))
-        state=general[l,:]
+        state=batch_to_batch2(data,DEPART)
         for t in count():
             # Select and perform an action
             action,samp = select_action(state)

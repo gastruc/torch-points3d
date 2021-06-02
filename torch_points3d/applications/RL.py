@@ -114,13 +114,13 @@ class BasePointnet2(UnwrappedUnetBasedModel):
     def _set_input(self, data):
         """Unpack input data from the dataloader and perform necessary pre-processing steps.
         """
-        #assert len(data.pos.shape) == 3
+        assert len(data.pos.shape) == 3
         data = data.to(self.device)
-        #if data.x is not None:
-            #data.x = data.x.transpose(1, 2).contiguous()
-        #else:
-            #data.x = None
-        self.input = data.transpose(0,1).contiguous()
+        if data.x is not None:
+            data.x = data.x.transpose(1, 2).contiguous()
+        else:
+            data.x = None
+        self.input = data
 
 
 class PointNet2Encoder(BasePointnet2):
@@ -146,7 +146,7 @@ class PointNet2Encoder(BasePointnet2):
             data = self.inner_modules[0](data)
         return data
         if self.has_mlp_head:
-            data = self.mlp(data)
+            data.x = self.mlp(data.x)
 
         return data
 
