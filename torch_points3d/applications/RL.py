@@ -114,7 +114,7 @@ class BasePointnet2(UnwrappedUnetBasedModel):
     def _set_input(self, data):
         """Unpack input data from the dataloader and perform necessary pre-processing steps.
         """
-        assert len(data.pos.shape) == 3
+        #assert len(data.pos.shape) == 3
         data = data.to(self.device)
         if data.x is not None:
             data.x = data.x.transpose(1, 2).contiguous()
