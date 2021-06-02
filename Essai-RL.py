@@ -32,6 +32,7 @@ DIR = ""
 #@title Choose ModelNet parameters {run: "auto"}
 MODELNET_VERSION="40" #@param ["10", "40"]
 USE_NORMAL = True
+device="cuda"
 
 from torch_points3d.datasets.classification.modelnet import SampledModelNet
 import torch_points3d.core.data_transform as T3D
@@ -212,7 +213,7 @@ TARGET_UPDATE = 10
 
 n_actions = 2
 
-policy_net = DQN().to(device)
+policy_net = DQN(1024).to(device)
 
 optimizer = optim.RMSprop(policy_net.parameters())
 memory = ReplayMemory(200)
