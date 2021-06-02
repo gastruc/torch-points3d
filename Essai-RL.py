@@ -373,7 +373,7 @@ for i_episode in range(num_episodes):
     if i_episode%1==0:
         print(i_episode)
     for i, data in enumerate(train_loader):
-        indice=random.randint(len(data['x']))
+        indice=random.randint(0,len(data['x'])-1)
         general=data['x'][indice]
         print(len(general))
         classe=data['y'][indice]
