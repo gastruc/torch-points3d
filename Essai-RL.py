@@ -375,10 +375,9 @@ for i_episode in range(num_episodes):
     for i, data in enumerate(train_loader):
         indice=random.randint(0,len(data['x'])-1)
         general=data['x'][indice]
-        print(len(general))
         classe=data['y'][indice]
         l=list(np.random.randint(len(general), size=DEPART))
-        state=general[l1,:]
+        state=general[l,:]
         for t in count():
             # Select and perform an action
             action,samp = select_action(state)
