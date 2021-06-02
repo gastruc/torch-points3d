@@ -176,10 +176,10 @@ class DQN(nn.Module):
 
     # Called with either one element to determine next action, or a batch
     # during optimization. Returns tensor([[left0exp,right0exp]...]).
-    def forward(self, x,y):
+    def forward(self, x,indice,y):
         x = x.to(device)
         data=model_128.extract(x)
-        x = F.relu(self.bn1(self.conv1(data['x'])))
+        x = F.relu(self.bn1(self.conv1(data['x'][indice])))
         x=torch.cat((x,y),0)
         x=F.relu(self.head1(x))
         return self.head2(x)
@@ -229,15 +229,13 @@ def select_action(state,indice):
     eps_threshold = EPS_END + (EPS_START - EPS_END) * \
         math.exp(-1. * steps_done / EPS_DECAY)
     steps_done += 1
-    #if sample > eps_threshold:
-    if True:
+    if sample > eps_threshold:
         with torch.no_grad():
             # t.max(1) will return largest column value of each row.
             # second column on max result is index of where max element was
             # found, so we pick action with the larger expected reward.
-            print("enter")
             samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
-            return policy_net(state.x[indice],samp).max(1)[1].view(1, 1),samp
+            return policy_net(state,indice,samp).max(1)[1].view(1, 1),samp
     else:
         return torch.tensor([[random.randrange(int(n_actions))]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
 
