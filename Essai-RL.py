@@ -291,6 +291,7 @@ def optimize_model():
 NUM_WORKERS = 4     
 model_128 = PointNet2CLassifier()
 model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(128)+".pth"))
+model_128.to(device)
 model_128.eval()
 
 yaml_config = """
@@ -355,6 +356,7 @@ def step(general,state,samp,action,classe):
         print("Problème",action)
 
 def get_min(general,samp):
+    print(device)
     l=[np.linalg.norm(general[j,:]-samp) for j in range(len(general))]
     #l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
     return(np.argmin(l))       
@@ -375,6 +377,7 @@ for i_episode in range(num_episodes):
         print(i_episode)
     for i, data in enumerate(train_loader):
         indice=random.randint(0,len(data['x'])-1)
+        data.to(device)
         general=data['x'][indice]
         classe=data['y'][indice]
         l=list(np.random.randint(len(general), size=DEPART))
@@ -382,6 +385,7 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state)
+            print(device)
             next_state, reward= step(general,state,samp,action,classe)
             reward = torch.tensor([reward], device=device)
 
