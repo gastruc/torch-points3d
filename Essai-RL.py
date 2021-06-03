@@ -422,7 +422,7 @@ def batch_to_batch2(data,random):
             batch[key]=item
         else:
             item = data[key]
-            batch[key]=torch.cat((torch.unsqueeze(item[0,l1,:],0),torch.unsqueeze(item[1,l1,:],0)),axis=0)
+            batch[key]=torch.cat((torch.unsqueeze(item[0,l1,:],0),torch.unsqueeze(item[1,l1,:],0),torch.unsqueeze(item[2,l1,:],0)),axis=0)
             #batch[key]=item[:,:128,:]
     return batch.contiguous(),l1
 
