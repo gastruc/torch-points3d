@@ -143,7 +143,7 @@ class PointNet2CLassifier(torch.nn.Module):
         self.labels = data.y.squeeze()
 
         # Forward through the network
-        print(data.x.shape)
+        #print(data.x.shape)
         data_out = self.encoder(data)
         self.output = self.log_softmax(data_out.x.squeeze())
 
@@ -151,8 +151,8 @@ class PointNet2CLassifier(torch.nn.Module):
         self.loss_class = torch.nn.functional.nll_loss(self.output, self.labels)
         
     def veri(self, inp,indice):
-        inp = data.to(device)
-        data_out = self.encoder(inp)
+        x = inp.to(device)
+        data_out = self.encoder(x)
         return(torch.argmax(self.log_softmax(data_out.x.squeeze())[indice])==data.y.squeeze()[indice])
         
         
@@ -178,8 +178,8 @@ class DQN(nn.Module):
     # during optimization. Returns tensor([[left0exp,right0exp]...]).
     def forward(self, x,indice,y):
         x = x.to(device)
-        data=model_128.extract(x)
-        x=torch.unsqueeze(data['x'][[indice]],1)
+        tr=model_128.extract(x)
+        x=torch.unsqueeze(tr['x'][[indice]],1)
         x=torch.squeeze(x,3)
         x=self.conv1(x)
         x=torch.squeeze(x,1)
