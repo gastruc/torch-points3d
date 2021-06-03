@@ -150,6 +150,7 @@ class PointNet2CLassifier(torch.nn.Module):
         self.loss_class = torch.nn.functional.nll_loss(self.output, self.labels)
         
     def veri(self, data):
+        data = data.to(device)
         print(data.keys)
         print(data['y'].shape)
         print("data.y",data['y'].squeeze().shape)
@@ -437,6 +438,7 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice)
+            print(t,state.shape)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             reward = torch.tensor([reward], device=device)
 
