@@ -133,6 +133,7 @@ class PointNet2Encoder(BasePointnet2):
                 x -- Features [B, N, C]
                 pos -- Points [B, N, 3]
         """
+        data=dat
         self._set_input(dat)
         data = self.input
         stack_down = [data]
