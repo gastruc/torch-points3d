@@ -363,6 +363,7 @@ def step(general,state,samp,action,points,indice):
         return(next_state,points,-0.01,False)
     elif action==1:
     #elif True:
+        print("veri",state.x.shape)
         if model_128.veri(state,indice):
             return(state,points,2,True)
         else:
