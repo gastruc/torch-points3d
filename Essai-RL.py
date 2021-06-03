@@ -179,16 +179,16 @@ class DQN(nn.Module):
     def forward(self, x,indice,y):
         x = x.to(device)
         tr=model_128.extract(x)
-        x=torch.unsqueeze(tr['x'][[indice]],1)
-        x=torch.squeeze(x,3)
-        x=self.conv1(x)
-        x=torch.squeeze(x,1)
+        tr=torch.unsqueeze(tr['x'][[indice]],1)
+        tr=torch.squeeze(tr,3)
+        tr=self.conv1(tr)
+        tr=torch.squeeze(tr,1)
         #x=torch.unsqueeze(x,1)
-        x = F.relu(x)
-        x=torch.squeeze(x)
-        x=torch.cat((x,torch.squeeze(y)),0)
-        x=F.relu(self.head1(x))
-        return self.head2(x)
+        tr = F.relu(tr)
+        tr=torch.squeeze(tr)
+        tr=torch.cat((tr,torch.squeeze(y)),0)
+        tr=F.relu(self.head1(tr))
+        return self.head2(tr)
     
     
 Transition = namedtuple('Transition',
