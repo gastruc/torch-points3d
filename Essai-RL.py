@@ -351,9 +351,9 @@ dataset.create_dataloaders(
                 precompute_multi_scale=False
             )    
 
-def step(general,state,samp,action,points):
+def step(general,state,samp,action,points,indice):
     if action==0:
-        state,points=find_neighbor(general,state,samp,points)
+        state,points=find_neighbor(general,state,samp,points,indice)
         return(state,points,-0.01,False)
     elif action==1:
         if model_128.veri(state):
@@ -363,13 +363,13 @@ def step(general,state,samp,action,points):
     else:
         print("Problème",action)
 
-def get_min(general,samp):
-    l=[np.linalg.norm(general[j,:]-samp) for j in range(len(general))]
+def get_min(general,samp,indice):
+    l=[np.linalg.norm(general.x[indice,j,:]-samp) for j in range(len(general.x[indice]))]
     #l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
     return(np.argmin(l))       
         
-def find_neighbor(general,state,samp,points):
-    u=get_min(general,samp)
+def find_neighbor(general,state,samp,points,indice):
+    u=get_min(general,samp,indice)
     points.append(u)
     return(batch_to_batch3(general),points)
     
@@ -434,7 +434,7 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice)
-            next_state,points, reward,done= step(data,state,samp,action,points)
+            next_state,points, reward,done= step(data,state,samp,action,points,indice)
             reward = torch.tensor([reward], device=device)
 
             # Store the transition in memory
