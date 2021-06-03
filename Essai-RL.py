@@ -438,7 +438,7 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice)
-            print(t,state.shape)
+            print(t,state.x.shape)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             reward = torch.tensor([reward], device=device)
 
