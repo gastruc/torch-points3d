@@ -260,9 +260,9 @@ def optimize_model():
 
     # Compute a mask of non-final states and concatenate the batch elements
     # (a final state would've been the one after which simulation ended)
-    #non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,batch.next_state)), device=device, dtype=torch.bool)
-    #non_final_next_states = torch.cat([s for s in batch.next_state if s is not None])
-    state_batch = torch.cat(batch.state)
+    non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,batch.next_state)), device=device, dtype=torch.bool)
+    non_final_next_states = list_to_batch([s for s in batch.next_state if s is not None])
+    state_batch = list_to_batch(batch.state)
     action_batch = torch.cat(batch.action)
     samp_batch = torch.cat(batch.samp)
     reward_batch = torch.cat(batch.reward)
@@ -278,7 +278,7 @@ def optimize_model():
     # This is merged based on the mask, such that we'll have either the expected
     # state value or 0 in case the state was final.
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
-    #next_state_values[non_final_mask] = target_net(non_final_next_states).max(1)[0].detach()
+    next_state_values[non_final_mask] = model_128(non_final_next_states).max(1)[0].detach()
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
 
@@ -418,7 +418,25 @@ def batch_to_batch2(data,random):
             #batch[key]=item[:,:128,:]
     return batch.contiguous(),l1
 
+def list_to_batch(data):
+    r"""Constructs a batch object from a python list holding
+    :class:`torch_geometric.data.Data` objects. 
+        """
 
+    keys = ['x','y','pos','grid_size']
+
+    batch = SimpleBatch()
+    batch.__data_class__ = data.__class__
+    
+
+    for key in data.keys:
+        if key in ['y','grid_size']:
+            item=torch.cat([data[i][key] for i in range(len(data))])
+            batch[key]=item
+        else:
+            item=torch.cat([data[i][key] for i in range(len(data))])
+            batch[key]=item
+    return batch.contiguous()
 
 
 train_loader = dataset.train_dataloader
