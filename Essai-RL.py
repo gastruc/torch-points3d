@@ -143,6 +143,7 @@ class PointNet2CLassifier(torch.nn.Module):
         self.labels = data.y.squeeze()
 
         # Forward through the network
+        print(data.x.shape)
         data_out = self.encoder(data)
         self.output = self.log_softmax(data_out.x.squeeze())
 
