@@ -264,6 +264,7 @@ def optimize_model():
     non_final_next_states = [s for s in batch.next_state if s is not None]
     non_final=[i for i in range(len(batch.next_state)) if batch.next_state[i] is not None]
     #state_batch = list_to_batch(batch.state)
+    print(batch.action)
     action_batch = torch.cat(batch.action)
     samp_batch = torch.cat(batch.samp)
     reward_batch = torch.cat(batch.reward)
