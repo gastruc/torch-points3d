@@ -191,7 +191,7 @@ class DQN(nn.Module):
     
     
 Transition = namedtuple('Transition',
-                        ('state', 'action','samp', 'next_state', 'reward'))
+                        ('state', 'action','samp', 'indice','next_state', 'reward'))
 
 
 class ReplayMemory(object):
@@ -261,16 +261,17 @@ def optimize_model():
     # Compute a mask of non-final states and concatenate the batch elements
     # (a final state would've been the one after which simulation ended)
     non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,batch.next_state)), device=device, dtype=torch.bool)
-    non_final_next_states = list_to_batch([s for s in batch.next_state if s is not None])
-    state_batch = list_to_batch(batch.state)
+    non_final_next_states = [s for s in batch.next_state if s is not None]
+    #state_batch = list_to_batch(batch.state)
     action_batch = torch.cat(batch.action)
     samp_batch = torch.cat(batch.samp)
+    indice_batch = torch.cat(batch.indice)
     reward_batch = torch.cat(batch.reward)
 
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
     # columns of actions taken. These are the actions which would've been taken
     # for each batch state according to policy_net
-    state_action_values = policy_net(state_batch,samp_batch).gather(1, action_batch)
+    state_action_values = (torch.cat([policy_net(batch.state[i],samp_batch[i])[indice] for i in range (len(batch.state))])).gather(1, action_batch)
 
     # Compute V(s_{t+1}) for all next states.
     # Expected values of actions for non_final_next_states are computed based
@@ -459,7 +460,7 @@ for i_episode in range(num_episodes):
             reward = torch.tensor([reward], device=device)
 
             # Store the transition in memory
-            memory.push(state, action, samp,next_state, reward)
+            memory.push(state, action, samp,indice,next_state, reward)
 
             # Move to the next state
             state = next_state
