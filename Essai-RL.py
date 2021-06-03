@@ -434,6 +434,7 @@ for i_episode in range(num_episodes):
         indice=random.randint(0,1)
         data.to(device)
         state,points=batch_to_batch2(data,DEPART)
+        print("new")
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice)
