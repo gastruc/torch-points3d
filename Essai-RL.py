@@ -374,7 +374,7 @@ def get_min(general,samp,indice):
 def find_neighbor(general,state,samp,points,indice):
     u=get_min(general,samp,indice)
     points.append(u)
-    return(batch_to_batch3(general),points)
+    return(batch_to_batch3(general,points),points)
     
 def batch_to_batch3(data,l):
     r"""Constructs a batch object from a python list holding
