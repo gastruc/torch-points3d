@@ -272,7 +272,6 @@ def optimize_model():
     non_final_next_states = [s for s in batch.next_state if s is not None]
     non_final=[i for i in range(len(batch.next_state)) if batch.next_state[i] is not None]
     #state_batch = list_to_batch(batch.state)
-    print(batch.action)
     action_batch = torch.cat(batch.action)
     samp_batch = torch.cat(batch.samp)
     reward_batch = torch.cat(batch.reward)
@@ -293,7 +292,6 @@ def optimize_model():
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
     #print(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))]))
     inter=torch.cat([model_128.sortie(non_final_next_states[i]).x[indice_batch[non_final[i]]] for i in range (len(non_final_next_states))])
-    print(inter.shape)
     next_state_values[non_final_mask] =inter.max(0)[0].detach()
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
@@ -466,13 +464,10 @@ for i_episode in range(num_episodes):
         indice=random.randint(0,1)
         data.to(device)
         state,points=batch_to_batch2(data,DEPART)
-        print("new")
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice)
-            print(t,state.x.shape)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
-            print("lol",action,state.x.shape)
             reward = torch.tensor([reward], device=device)
 
             # Store the transition in memory
@@ -480,7 +475,6 @@ for i_episode in range(num_episodes):
 
             # Move to the next state
             state = next_state
-            print("lol",action,state.x.shape)
             # Perform one step of the optimization (on the policy network)
             optimize_model()
             if done:
