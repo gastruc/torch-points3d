@@ -149,11 +149,11 @@ class PointNet2CLassifier(torch.nn.Module):
         # Set loss for the backward pass
         self.loss_class = torch.nn.functional.nll_loss(self.output, self.labels)
         
-    def veri(self, data,general,classe):
-        print("data.y",classe)
-        print("data.x",self.log_softmax(self.encoder(data)))
-        print(self.log_softmax(self.encoder(data))==classe)
-        return(self.log_softmax(self.encoder(data))==classe)
+    def veri(self, data):
+        print("data.y",data.y.squeeze())
+        print("data.x",self.log_softmax(self.encoder(data).x.squeeze()))
+        print(self.log_softmax(self.encoder(data).x.squeeze())==data.y.squeeze())
+        return(self.log_softmax(self.encoder(data).x.squeeze())==data.y.squeeze())
         
         
     def extract(self, data):
@@ -183,13 +183,10 @@ class DQN(nn.Module):
         x=torch.squeeze(x,3)
         x=self.conv1(x)
         x=torch.squeeze(x,1)
-        print(x.shape)
         #x=torch.unsqueeze(x,1)
         x = F.relu(x)
-        print(x.shape)
         x=torch.squeeze(x)
         x=torch.cat((x,torch.squeeze(y)),0)
-        print(x.shape)
         x=F.relu(self.head1(x))
         return self.head2(x)
     
@@ -354,15 +351,15 @@ dataset.create_dataloaders(
                 precompute_multi_scale=False
             )    
 
-def step(general,state,samp,action,classe):
+def step(general,state,samp,action,points):
     if action==0:
-        state=find_neighbor(general,state,samp)
-        return(state,-0.01)
+        state,points=find_neighbor(general,state,samp,points)
+        return(state,points,-0.01,False)
     elif action==1:
-        if model_128.veri(state,general,classe):
-            return(state,2)
+        if model_128.veri(state):
+            return(state,points,2,True)
         else:
-            return(state,-1)
+            return(state,points,-1,True)
     else:
         print("Problème",action)
 
@@ -371,9 +368,32 @@ def get_min(general,samp):
     #l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
     return(np.argmin(l))       
         
-def find_neighbor(general,state,samp):
+def find_neighbor(general,state,samp,points):
     u=get_min(general,samp)
+    points.append(u)
+    return(batch_to_batch3(general),points)
     
+def batch_to_batch3(data,l):
+    r"""Constructs a batch object from a python list holding
+    :class:`torch_geometric.data.Data` objects. 
+        """
+
+    keys = ['x','y','pos','grid_size']
+
+    batch = SimpleBatch()
+    batch.__data_class__ = data.__class__
+
+    for key in data.keys:
+        if key in ['y','grid_size']:
+            item = data[key]
+            batch[key]=item
+        else:
+            item = data[key]
+            batch[key]=torch.cat((torch.unsqueeze(item[0,l,:],0),torch.unsqueeze(item[1,l,:],0)),axis=0)
+            #batch[key]=item[:,:128,:]
+    return batch.contiguous(),l1
+
+
     
 def batch_to_batch2(data,random):
     r"""Constructs a batch object from a python list holding
@@ -393,9 +413,9 @@ def batch_to_batch2(data,random):
             batch[key]=item
         else:
             item = data[key]
-            batch[key]=torch.cat((torch.unsqueeze(item[0,l1,:],0),torch.unsqueeze(item[1,l2,:],0)),axis=0)
+            batch[key]=torch.cat((torch.unsqueeze(item[0,l1,:],0),torch.unsqueeze(item[1,l1,:],0)),axis=0)
             #batch[key]=item[:,:128,:]
-    return batch.contiguous()
+    return batch.contiguous(),l1
 
 
 
@@ -410,11 +430,11 @@ for i_episode in range(num_episodes):
     for i, data in enumerate(train_loader):
         indice=random.randint(0,1)
         data.to(device)
-        state=batch_to_batch2(data,DEPART)
+        state,points=batch_to_batch2(data,DEPART)
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice)
-            next_state, reward= step(data,state,samp,action)
+            next_state,points, reward,done= step(data,state,samp,action,points)
             reward = torch.tensor([reward], device=device)
 
             # Store the transition in memory
