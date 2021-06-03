@@ -271,6 +271,7 @@ def optimize_model():
     action_batch = torch.cat(batch.action)
     samp_batch = torch.cat(batch.samp)
     reward_batch = torch.cat(batch.reward)
+    indice_batch=list(batch.indice)
 
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
     # columns of actions taken. These are the actions which would've been taken
@@ -287,8 +288,8 @@ def optimize_model():
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
     #print(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))]))
     print(non_final_next_states[0].x.shape,non_final_next_states[0].y.shape)
-    print(batch.indice,non_final)
-    inter=torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))])
+    print(indice_batch,non_final)
+    inter=torch.cat([model_128(non_final_next_states[i])[indice_batch[non_final[i]]] for i in range (len(non_final_next_states))])
     next_state_values[non_final_mask] =inter.max(1)[0].detach()
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
@@ -398,7 +399,7 @@ def batch_to_batch3(data,l):
     for key in data.keys:
         if key in ['y','grid_size']:
             item = data[key]
-            batch[key]=item
+            batch[key]=item[[0,1]]
         else:
             item = data[key]
             batch[key]=torch.cat((torch.unsqueeze(item[0,l,:],0),torch.unsqueeze(item[1,l,:],0)),axis=0)
