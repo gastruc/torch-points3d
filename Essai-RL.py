@@ -180,6 +180,7 @@ class DQN(nn.Module):
         inp = inp.to(device)
         print(inp.x.shape,0)
         tr=model_128.extract(inp)
+        inp.x = inp.x.transpose(1, 2)
         print(inp.x.shape,2)
         tr=torch.unsqueeze(tr['x'][[indice]],1)
         tr=torch.squeeze(tr,3)
