@@ -277,7 +277,6 @@ def optimize_model():
     # for each batch state according to policy_net
     #print(policy_net(batch.state[0],batch.indice[0],samp_batch[0]))
     #print(torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))]).shape,action_batch.shape)
-    print("opt",batch.state[0].x.shape)
     state_action_values = (torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))])).gather(0, torch.squeeze(action_batch))
 
     # Compute V(s_{t+1}) for all next states.
@@ -288,7 +287,7 @@ def optimize_model():
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
     #print(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))]))
     print(non_final_next_states[0].x.shape,non_final_next_states[0].y.shape)
-    print(len(non_final_next_states))
+    print(batch.indice,non_final)
     inter=torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))])
     next_state_values[non_final_mask] =inter.max(1)[0].detach()
     # Compute the expected Q values
