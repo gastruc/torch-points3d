@@ -151,10 +151,7 @@ class PointNet2CLassifier(torch.nn.Module):
         
     def veri(self, data,indice):
         data = data.to(device)
-        print("data.y",data['y'].squeeze()[indice])
         data_out = self.encoder(data)
-        print(torch.argmax(self.log_softmax(data_out.x.squeeze())[indice]))
-        print(torch.argmax(self.log_softmax(data_out.x.squeeze())[indice])==data.y.squeeze()[indice])
         return(torch.argmax(self.log_softmax(data_out.x.squeeze())[indice])==data.y.squeeze()[indice])
         
         
@@ -354,12 +351,12 @@ dataset.create_dataloaders(
             )    
 
 def step(general,state,samp,action,points,indice):
-    #if action==0:
-    if False:
+    if action==0:
+    #if False:
         state,points=find_neighbor(general,state,samp,points,indice)
         return(state,points,-0.01,False)
-    #elif action==1:
-    elif True:
+    elif action==1:
+    #elif True:
         if model_128.veri(state,indice):
             return(state,points,2,True)
         else:
@@ -453,7 +450,6 @@ for i_episode in range(num_episodes):
             optimize_model()
             if done:
                 episode_durations.append(t + 1)
-                plot_durations()
                 break
 
 
