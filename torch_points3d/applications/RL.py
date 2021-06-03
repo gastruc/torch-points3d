@@ -148,7 +148,6 @@ class PointNet2Encoder(BasePointnet2):
             return data
         if self.has_mlp_head:
             data.x = self.mlp(data.x)
-
         return data
 
 
