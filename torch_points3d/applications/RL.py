@@ -124,7 +124,7 @@ class BasePointnet2(UnwrappedUnetBasedModel):
 
 
 class PointNet2Encoder(BasePointnet2):
-    def forward(self, data,extract=False ,*args, **kwargs):
+    def forward(self, dat,extract=False ,*args, **kwargs):
         """
         Parameters:
         -----------
@@ -133,7 +133,7 @@ class PointNet2Encoder(BasePointnet2):
                 x -- Features [B, N, C]
                 pos -- Points [B, N, 3]
         """
-        self._set_input(data)
+        self._set_input(dat)
         data = self.input
         stack_down = [data]
         for i in range(len(self.down_modules) - 1):
