@@ -429,7 +429,7 @@ def list_to_batch(data):
     batch.__data_class__ = data.__class__
     
 
-    for key in data.keys:
+    for key in keys:
         if key in ['y','grid_size']:
             item=torch.cat([data[i][key] for i in range(len(data))])
             batch[key]=item
