@@ -357,8 +357,8 @@ dataset.create_dataloaders(
 def step(general,state,samp,action,points,indice):
     if action==0:
     #if False:
-        state,points=find_neighbor(general,state,samp,points,indice)
-        return(state,points,-0.01,False)
+        next_state,points=find_neighbor(general,state,samp,points,indice)
+        return(next_state,points,-0.01,False)
     elif action==1:
     #elif True:
         if model_128.veri(state,indice):
@@ -463,6 +463,7 @@ for i_episode in range(num_episodes):
             print(t,state.x.shape)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             print("lol",state.x.shape)
+            print("lol",next_state.x.shape)
             reward = torch.tensor([reward], device=device)
 
             # Store the transition in memory
