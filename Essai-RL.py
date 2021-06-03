@@ -178,10 +178,8 @@ class DQN(nn.Module):
     # during optimization. Returns tensor([[left0exp,right0exp]...]).
     def forward(self, inp,indice,y):
         inp = inp.to(device)
-        print(inp.x.shape,0)
         tr=model_128.extract(inp)
         inp.x = inp.x.transpose(1, 2)
-        print(inp.x.shape,2)
         tr=torch.unsqueeze(tr['x'][[indice]],1)
         tr=torch.squeeze(tr,3)
         tr=self.conv1(tr)
@@ -191,7 +189,6 @@ class DQN(nn.Module):
         tr=torch.squeeze(tr)
         tr=torch.cat((tr,torch.squeeze(y)),0)
         tr=F.relu(self.head1(tr))
-        print(inp.x.shape,1)
         return self.head2(tr)
     
     
@@ -239,16 +236,14 @@ def select_action(state,indice):
     eps_threshold = EPS_END + (EPS_START - EPS_END) * \
         math.exp(-1. * steps_done / EPS_DECAY)
     steps_done += 1
-    #if sample > eps_threshold:
-    if True:
+    if sample > eps_threshold:
+    #if True:
         with torch.no_grad():
             # t.max(1) will return largest column value of each row.
             # second column on max result is index of where max element was
             # found, so we pick action with the larger expected reward.
             samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
             #return policy_net(state,indice,samp).max(1)[1].view(1, 1),samp
-            print("action",state.x.shape)
-            print(policy_net(state,indice,samp))
             return torch.argmax(policy_net(state,indice,samp)),samp
     else:
         return torch.tensor([[random.randrange(int(n_actions))]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
@@ -368,7 +363,6 @@ def step(general,state,samp,action,points,indice):
         return(next_state,points,-0.01,False)
     elif action==1:
     #elif True:
-        print("veri",state.x.shape)
         if model_128.veri(state,indice):
             return(state,points,2,True)
         else:
@@ -469,9 +463,9 @@ for i_episode in range(num_episodes):
             # Select and perform an action
             action,samp = select_action(state,indice)
             print(t,state.x.shape)
+            print(action)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
-            print("lol",state.x.shape)
-            print("lol",next_state.x.shape)
+            print(action,reward)
             reward = torch.tensor([reward], device=device)
 
             # Store the transition in memory
@@ -479,7 +473,6 @@ for i_episode in range(num_episodes):
 
             # Move to the next state
             state = next_state
-            print("bb",state.x.shape)
 
             # Perform one step of the optimization (on the policy network)
             optimize_model()
