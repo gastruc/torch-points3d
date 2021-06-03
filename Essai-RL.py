@@ -151,11 +151,7 @@ class PointNet2CLassifier(torch.nn.Module):
         
     def veri(self, data,indice):
         data = data.to(device)
-        print(data.keys)
-        print(data['x'].shape)
-        print(data['y'].shape)
         print("data.y",data['y'].squeeze()[indice])
-        print(self.encoder(data))
         data_out = self.encoder(data)
         print(self.log_softmax(data_out.x.squeeze()))
         print(self.log_softmax(data_out.x))
