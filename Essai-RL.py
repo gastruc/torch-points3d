@@ -283,7 +283,7 @@ def optimize_model():
     # state value or 0 in case the state was final.
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
     #print(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))]))
-    next_state_values[non_final_mask] =(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]]]) for i in range (len(non_final_next_states))).max(1)[0].detach()
+    next_state_values[non_final_mask] =(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))])).max(1)[0].detach()
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
 
