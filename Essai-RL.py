@@ -366,7 +366,8 @@ def step(general,state,samp,action,points,indice):
 
 def get_min(general,samp,indice):
     bidule=np.array(general.x.cpu()[indice])
-    l=[np.linalg.norm(bidule[j,:]-samp) for j in range(len(bidule))]
+    samp2=np.array(samp.cpu())
+    l=[np.linalg.norm(bidule[j,:]-samp2) for j in range(len(bidule))]
     #l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
     return(np.argmin(l))       
         
