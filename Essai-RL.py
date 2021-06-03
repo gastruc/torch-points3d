@@ -397,7 +397,7 @@ def batch_to_batch3(data,l):
     for key in data.keys:
         if key in ['y','grid_size']:
             item = data[key]
-            batch[key]=item
+            batch[key]=item[[0,1]]
         else:
             item = data[key]
             batch[key]=torch.cat((torch.unsqueeze(item[0,l,:],0),torch.unsqueeze(item[1,l,:],0)),axis=0)
