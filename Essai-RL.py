@@ -286,7 +286,9 @@ def optimize_model():
     # state value or 0 in case the state was final.
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
     #print(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))]))
-    next_state_values[non_final_mask] =(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))])).max(1)[0].detach()
+    print(non_final_next_states[0].x.shape,non_final_next_states[0].y.shape)
+    inter=torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))])
+    next_state_values[non_final_mask] =inter.max(1)[0].detach()
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
 
@@ -422,7 +424,7 @@ def batch_to_batch2(data,random):
             batch[key]=item
         else:
             item = data[key]
-            batch[key]=torch.cat((torch.unsqueeze(item[0,l1,:],0),torch.unsqueeze(item[1,l1,:],0),torch.unsqueeze(item[2,l1,:],0)),axis=0)
+            batch[key]=torch.cat((torch.unsqueeze(item[0,l1,:],0),torch.unsqueeze(item[1,l1,:],0)),axis=0)
             #batch[key]=item[:,:128,:]
     return batch.contiguous(),l1
 
