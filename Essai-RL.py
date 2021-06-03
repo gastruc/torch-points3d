@@ -176,9 +176,11 @@ class DQN(nn.Module):
 
     # Called with either one element to determine next action, or a batch
     # during optimization. Returns tensor([[left0exp,right0exp]...]).
-    def forward(self, x,indice,y):
-        x = x.to(device)
-        tr=model_128.extract(x)
+    def forward(self, inp,indice,y):
+        inp = inp.to(device)
+        print(inp.x.shape,0)
+        tr=model_128.extract(inp)
+        print(inp.x.shape,2)
         tr=torch.unsqueeze(tr['x'][[indice]],1)
         tr=torch.squeeze(tr,3)
         tr=self.conv1(tr)
@@ -188,6 +190,7 @@ class DQN(nn.Module):
         tr=torch.squeeze(tr)
         tr=torch.cat((tr,torch.squeeze(y)),0)
         tr=F.relu(self.head1(tr))
+        print(inp.x.shape,1)
         return self.head2(tr)
     
     
