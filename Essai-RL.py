@@ -298,7 +298,7 @@ def optimize_model():
 
     # Compute Huber loss
     criterion = nn.SmoothL1Loss()
-    loss = criterion(state_action_values, expected_state_action_values.unsqueeze(1))
+    loss = criterion(state_action_values, expected_state_action_values)
 
     # Optimize the model
     optimizer.zero_grad()
@@ -461,6 +461,8 @@ for i_episode in range(num_episodes):
     if i_episode%1==0:
         print(i_episode)
     for i, data in enumerate(train_loader):
+        if i%100==0:
+            print(i)
         indice=random.randint(0,1)
         data.to(device)
         state,points=batch_to_batch2(data,DEPART)
