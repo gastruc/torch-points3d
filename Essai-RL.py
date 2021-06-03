@@ -458,7 +458,7 @@ def list_to_batch(data):
 proba=0.9
 train_loader = dataset.train_dataloader
 DEPART=64
-num_episodes = 20
+num_episodes = 100
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     if i_episode%1==0:
@@ -474,7 +474,6 @@ for i_episode in range(num_episodes):
             action,samp = select_action(state,indice,proba)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             reward = torch.tensor([reward], device=device)
-            print(action)
             # Store the transition in memory
             memory.push(state, action, samp,indice,next_state, reward)
 
@@ -486,7 +485,7 @@ for i_episode in range(num_episodes):
                 episode_durations.append(t + 1)
                 break
 
-
+torch.save(policy_net.state_dict(), "policy_net.pth")
 print('Complete')
     
     
