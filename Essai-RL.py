@@ -462,6 +462,7 @@ for i_episode in range(num_episodes):
             action,samp = select_action(state,indice)
             print(t,state.x.shape)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
+            print("lol",state.x.shape)
             reward = torch.tensor([reward], device=device)
 
             # Store the transition in memory
@@ -469,6 +470,7 @@ for i_episode in range(num_episodes):
 
             # Move to the next state
             state = next_state
+            print("bb",state.x.shape)
 
             # Perform one step of the optimization (on the policy network)
             optimize_model()
