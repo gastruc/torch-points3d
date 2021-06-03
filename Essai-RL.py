@@ -474,7 +474,7 @@ for i_episode in range(num_episodes):
 
             # Move to the next state
             state = next_state
-
+            print("lol",action,state.x.shape)
             # Perform one step of the optimization (on the policy network)
             optimize_model()
             if done:
