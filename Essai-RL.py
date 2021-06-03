@@ -236,7 +236,7 @@ memory = ReplayMemory(200)
 steps_done = 0
 
 
-def select_action(state,indice):
+def select_action(state,indice,p):
     global steps_done
     sample = random.random()
     eps_threshold = EPS_END + (EPS_START - EPS_END) * \
@@ -252,7 +252,10 @@ def select_action(state,indice):
             #return policy_net(state,indice,samp).max(1)[1].view(1, 1),samp
             return torch.tensor([[torch.argmax(policy_net(state,indice,samp))]], device=device, dtype=torch.long),samp
     else:
-        return torch.tensor([[random.randint(0,n_actions-1)]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
+        if random.random()>p:
+            return torch.tensor([[1]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
+        else:
+            return torch.tensor([[0]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
 
 
 episode_durations = []
@@ -452,7 +455,7 @@ def list_to_batch(data):
             batch[key]=item
     return batch.contiguous()
 
-
+proba=0.9
 train_loader = dataset.train_dataloader
 DEPART=64
 num_episodes = 20
@@ -468,10 +471,10 @@ for i_episode in range(num_episodes):
         state,points=batch_to_batch2(data,DEPART)
         for t in count():
             # Select and perform an action
-            action,samp = select_action(state,indice)
+            action,samp = select_action(state,indice,proba)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             reward = torch.tensor([reward], device=device)
-
+            print(action)
             # Store the transition in memory
             memory.push(state, action, samp,indice,next_state, reward)
 
@@ -479,7 +482,7 @@ for i_episode in range(num_episodes):
             state = next_state
             # Perform one step of the optimization (on the policy network)
             optimize_model()
-            if done:
+            if done or next_state.x.shape[1]>128:
                 episode_durations.append(t + 1)
                 break
 
