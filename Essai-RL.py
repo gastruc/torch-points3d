@@ -235,14 +235,15 @@ def select_action(state,indice):
     eps_threshold = EPS_END + (EPS_START - EPS_END) * \
         math.exp(-1. * steps_done / EPS_DECAY)
     steps_done += 1
-    if sample > eps_threshold:
-    #if True:
+    #if sample > eps_threshold:
+    if True:
         with torch.no_grad():
             # t.max(1) will return largest column value of each row.
             # second column on max result is index of where max element was
             # found, so we pick action with the larger expected reward.
             samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
             #return policy_net(state,indice,samp).max(1)[1].view(1, 1),samp
+            print("action",state.x.shape)
             return torch.argmax(policy_net(state,indice,samp)),samp
     else:
         return torch.tensor([[random.randrange(int(n_actions))]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
@@ -275,6 +276,7 @@ def optimize_model():
     # for each batch state according to policy_net
     #print(policy_net(batch.state[0],batch.indice[0],samp_batch[0]))
     #print(torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))]).shape,action_batch.shape)
+    print("opt",batch.state[0].x.shape)
     state_action_values = (torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))])).gather(0, torch.squeeze(action_batch))
 
     # Compute V(s_{t+1}) for all next states.
