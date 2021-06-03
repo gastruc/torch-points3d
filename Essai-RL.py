@@ -150,6 +150,8 @@ class PointNet2CLassifier(torch.nn.Module):
         self.loss_class = torch.nn.functional.nll_loss(self.output, self.labels)
         
     def veri(self, data):
+        print(data.keys)
+        print(data['y'].shape)
         print("data.y",data.y.squeeze())
         print("data.x",self.log_softmax(self.encoder(data).x.squeeze()))
         print(self.log_softmax(self.encoder(data).x.squeeze())==data.y.squeeze())
