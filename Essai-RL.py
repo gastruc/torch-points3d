@@ -394,7 +394,7 @@ def batch_to_batch3(data,l):
             item = data[key]
             batch[key]=torch.cat((torch.unsqueeze(item[0,l,:],0),torch.unsqueeze(item[1,l,:],0)),axis=0)
             #batch[key]=item[:,:128,:]
-    return batch.contiguous(),l1
+    return batch.contiguous()
 
 
     
