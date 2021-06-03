@@ -149,13 +149,14 @@ class PointNet2CLassifier(torch.nn.Module):
         # Set loss for the backward pass
         self.loss_class = torch.nn.functional.nll_loss(self.output, self.labels)
         
-    def veri(self, data):
+    def veri(self, data,indice):
         data = data.to(device)
         print(data.keys)
         print(data['y'].shape)
-        print("data.y",data['y'].squeeze().shape)
+        print("data.y",data['y'].squeeze()[indice])
         print(self.encoder(data))
         print("data.x",self.log_softmax(self.encoder(data).x.squeeze()).shape)
+        print("data.x",self.log_softmax(self.encoder(data).x.squeeze())[indice])
         print(self.log_softmax(self.encoder(data).x.squeeze())==data.y.squeeze())
         return(self.log_softmax(self.encoder(data).x.squeeze())==data.y.squeeze())
         
@@ -239,8 +240,8 @@ def select_action(state,indice):
     eps_threshold = EPS_END + (EPS_START - EPS_END) * \
         math.exp(-1. * steps_done / EPS_DECAY)
     steps_done += 1
-    #if sample > eps_threshold:
-    if True:
+    if sample > eps_threshold:
+    #if True:
         with torch.no_grad():
             # t.max(1) will return largest column value of each row.
             # second column on max result is index of where max element was
@@ -356,11 +357,13 @@ dataset.create_dataloaders(
             )    
 
 def step(general,state,samp,action,points,indice):
-    if action==0:
+    #if action==0:
+    if False:
         state,points=find_neighbor(general,state,samp,points,indice)
         return(state,points,-0.01,False)
-    elif action==1:
-        if model_128.veri(state):
+    #elif action==1:
+    elif True:
+        if model_128.veri(state,indice):
             return(state,points,2,True)
         else:
             return(state,points,-1,True)
@@ -368,7 +371,8 @@ def step(general,state,samp,action,points,indice):
         print("Problème",action)
 
 def get_min(general,samp,indice):
-    l=[np.linalg.norm(general.x[indice,j,:]-samp) for j in range(len(general.x[indice]))]
+    general2=general.to("cpu")
+    l=[np.linalg.norm(general2.x[indice,j,:]-samp) for j in range(len(general2.x[indice]))]
     #l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
     return(np.argmin(l))       
         
