@@ -124,7 +124,7 @@ class BasePointnet2(UnwrappedUnetBasedModel):
 
 
 class PointNet2Encoder(BasePointnet2):
-    def forward(self, data, *args, **kwargs):
+    def forward(self, data,extract=False ,*args, **kwargs):
         """
         Parameters:
         -----------
@@ -144,7 +144,8 @@ class PointNet2Encoder(BasePointnet2):
         if not isinstance(self.inner_modules[0], Identity):
             stack_down.append(data)
             data = self.inner_modules[0](data)
-        return data
+        if extract:
+            return data
         if self.has_mlp_head:
             data.x = self.mlp(data.x)
 

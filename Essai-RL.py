@@ -161,7 +161,7 @@ class PointNet2CLassifier(torch.nn.Module):
         
         
     def extract(self, data):
-        return(self.encoder(data))
+        return(self.encoder(data,True))
     
     def backward(self):
          self.loss_class.backward()
