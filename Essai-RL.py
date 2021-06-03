@@ -465,9 +465,8 @@ for i_episode in range(num_episodes):
             # Select and perform an action
             action,samp = select_action(state,indice)
             print(t,state.x.shape)
-            print(action)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
-            print(action,reward)
+            print("lol",action,state.x.shape)
             reward = torch.tensor([reward], device=device)
 
             # Store the transition in memory
