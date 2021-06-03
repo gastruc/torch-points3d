@@ -160,6 +160,9 @@ class PointNet2CLassifier(torch.nn.Module):
     def extract(self, data):
         return(self.encoder(data,True))
     
+    def sortie(self, data):
+        return(self.encoder(data))
+    
     def backward(self):
          self.loss_class.backward()
 
@@ -287,12 +290,9 @@ def optimize_model():
     # state value or 0 in case the state was final.
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
     #print(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))]))
-    print(indice_batch,non_final,non_final_next_states)
-    print(non_final_next_states[0])
-    print(model_128(non_final_next_states[0]))
-    print(model_128(non_final_next_states[0])[indice_batch[non_final[0]]])
-    print(indice_batch,non_final,non_final_next_states)
-    inter=torch.cat([model_128(non_final_next_states[i])[indice_batch[non_final[i]]] for i in range (len(non_final_next_states))])
+    #print(model_128(non_final_next_states[0]))
+    #print(model_128(non_final_next_states[0])[indice_batch[non_final[0]]])
+    inter=torch.cat([model_128.sortie(non_final_next_states[i])[indice_batch[non_final[i]]] for i in range (len(non_final_next_states))])
     next_state_values[non_final_mask] =inter.max(1)[0].detach()
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
