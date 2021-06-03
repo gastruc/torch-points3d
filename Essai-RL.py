@@ -149,9 +149,9 @@ class PointNet2CLassifier(torch.nn.Module):
         # Set loss for the backward pass
         self.loss_class = torch.nn.functional.nll_loss(self.output, self.labels)
         
-    def veri(self, data,indice):
-        data = data.to(device)
-        data_out = self.encoder(data)
+    def veri(self, inp,indice):
+        inp = data.to(device)
+        data_out = self.encoder(inp)
         return(torch.argmax(self.log_softmax(data_out.x.squeeze())[indice])==data.y.squeeze()[indice])
         
         
