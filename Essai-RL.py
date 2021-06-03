@@ -153,10 +153,9 @@ class PointNet2CLassifier(torch.nn.Module):
         data = data.to(device)
         print("data.y",data['y'].squeeze()[indice])
         data_out = self.encoder(data)
-        print(self.log_softmax(data_out.x.squeeze()))
         print(torch.argmax(self.log_softmax(data_out.x.squeeze())[indice]))
-        print(self.log_softmax(self.encoder(data).x.squeeze())==data.y.squeeze())
-        return(self.log_softmax(self.encoder(data).x.squeeze())==data.y.squeeze())
+        print(torch.argmax(self.log_softmax(data_out.x.squeeze())[indice])==data.y.squeeze()[indice])
+        return(torch.argmax(self.log_softmax(data_out.x.squeeze())[indice])==data.y.squeeze()[indice])
         
         
     def extract(self, data):
