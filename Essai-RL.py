@@ -458,14 +458,12 @@ def list_to_batch(data):
 proba=0.9
 train_loader = dataset.train_dataloader
 DEPART=64
-num_episodes = 100
+num_episodes = 300
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     if i_episode%1==0:
         print(i_episode)
     for i, data in enumerate(train_loader):
-        if i%100==0:
-            print(i)
         indice=random.randint(0,1)
         data.to(device)
         state,points=batch_to_batch2(data,DEPART)
