@@ -297,6 +297,10 @@ def optimize_model():
     # state value or 0 in case the state was final.
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
     #print(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))]))
+    ln=[]
+    for i in range (len(non_final_next_states)):
+        ln.append(parcours(batch.general[non_final[i]], non_final_next_states[i],batch.points[non_final[i]],indice_batch[non_final[i]]))
+    inter=torch.cat(ln)
     inter=(torch.cat([parcours(batch.general[non_final[i]],non_final_next_states[i],batch.points[non_final[i]],indice_batch[non_final[i]]) for i in range (len(non_final_next_states))]))
     #inter=torch.cat([model_128.sortie(non_final_next_states[i]).x[indice_batch[non_final[i]]] for i in range (len(non_final_next_states))])
     print("inter",inter)
