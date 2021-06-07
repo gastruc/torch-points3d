@@ -329,6 +329,7 @@ def parcours(data,state,points,j):
         for i in range (n_actions):
             samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
             result=target_net(state,j,samp)
+            print("opéartion")
             l.append((max(result),torch.argmax(result),samp))
         _,action,samp=max(l)
         print("action",action)
