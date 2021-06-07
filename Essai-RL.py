@@ -485,14 +485,16 @@ def list_to_batch(data):
 proba=0.9
 train_loader = dataset.train_dataloader
 DEPART=64
-num_episodes = 300
-TARGET_UPDATE = 5
+num_episodes = 3
+TARGET_UPDATE = 1
 timer=time.time()
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     if i_episode%1==0:
         print(i_episode)
     for i, data in enumerate(train_loader):
+        if i%10==0:
+            print("i",i,time.time()-timer)
         indice=random.randint(0,1)
         data.to(device)
         state,points=batch_to_batch2(data,DEPART)
