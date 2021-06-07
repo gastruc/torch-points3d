@@ -250,9 +250,14 @@ def parcours(data,state,points,j):
             with torch.no_grad():
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
                 result=policy_net(state,j,samp)
+                print(samp)
+                print(result)
                 print(max(result),torch.argmax(result))
                 l.append((max(result),torch.argmax(result),samp))
-        _,action,samp=max(l)
+        try:
+            _,action,samp=max(l)
+        except:
+            print("error",l)
         if action==0:
             state,points=find_neighbor(general,state,samp,points,1)
         
