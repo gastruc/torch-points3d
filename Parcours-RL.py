@@ -248,6 +248,7 @@ def parcours(data,state,points,j):
         l=[]
         for i in range (n_actions):
             samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
+            print(samp)
             result=policy_net(state,j,samp)
             print("max de result",result,max(result),torch.argmax(result))
             l.append((max(result),torch.argmax(result),samp))
