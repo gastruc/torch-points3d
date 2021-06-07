@@ -320,7 +320,7 @@ def parcours(data,state,points,j):
     n_actions=64
     action=0
     etapes=0
-    while action==0:
+    while action==0 and len(points)<128:
         l=[]
         for i in range (n_actions):
             with torch.no_grad():
@@ -328,7 +328,6 @@ def parcours(data,state,points,j):
                 result=target_net(state,j,samp)
                 l.append((max(result),torch.argmax(result),samp))
         _,action,samp=max(l)
-        print("action",action)
         etapes+=1
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
