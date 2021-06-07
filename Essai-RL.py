@@ -485,8 +485,8 @@ def list_to_batch(data):
 proba=0.9
 train_loader = dataset.train_dataloader
 DEPART=64
-num_episodes = 3
-TARGET_UPDATE = 1
+num_episodes = 300
+TARGET_UPDATE = 5
 timer=time.time()
 for i_episode in range(num_episodes):
     # Initialize the environment and state
