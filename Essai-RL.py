@@ -327,11 +327,12 @@ def parcours(data,state,points,j):
     while action==0:
         l=[]
         for i in range (n_actions):
-            samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
-            result=target_net(state,j,samp)
-            print("opéartion")
-            print((result,max(result),torch.argmax(result),samp))
-            l.append((max(result),torch.argmax(result),samp))
+            with torch.no_grad():
+                samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
+                result=target_net(state,j,samp)
+                print("opéartion")
+                print((result,max(result),torch.argmax(result),samp))
+                l.append((max(result),torch.argmax(result),samp))
         _,action,samp=max(l)
         print("action",action)
         etapes+=1
