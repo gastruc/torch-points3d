@@ -330,7 +330,7 @@ def parcours(data,state,points,j):
         try:
             _,action,samp=max(l)
         except:
-            print("error",l)
+            print("error")
         etapes+=1
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
