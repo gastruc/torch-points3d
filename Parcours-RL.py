@@ -127,6 +127,8 @@ class DQN(nn.Module):
         tr=F.relu(self.head1(tr))
         return self.head2(tr)
     
+def get_list_random(k,l):
+    return (list(np.random.randint(l, size=k)),list(np.random.randint(l, size=k)),list(np.random.randint(l, size=k)))
 
 model_128 = PointNet2CLassifier()
 model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(128)+".pth"))
