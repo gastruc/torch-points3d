@@ -299,11 +299,9 @@ def optimize_model():
     #print(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))]))
     inter=torch.tensor([parcours(batch.general[non_final[i]],non_final_next_states[i],batch.points[non_final[i]],indice_batch[non_final[i]]) for i in range (len(non_final_next_states))], device=device)
     #inter=torch.cat([model_128.sortie(non_final_next_states[i]).x[indice_batch[non_final[i]]] for i in range (len(non_final_next_states))])
-    print("inter",inter)
     next_state_values[non_final_mask]=inter
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
-    print(expected_state_action_values)
 
     # Compute Huber loss
     criterion = nn.SmoothL1Loss()
@@ -486,13 +484,16 @@ def list_to_batch(data):
 proba=0.9
 train_loader = dataset.train_dataloader
 DEPART=64
-num_episodes = 300
+num_episodes = 3
 TARGET_UPDATE = 10
+timer=time.time()
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     if i_episode%1==0:
         print(i_episode)
     for i, data in enumerate(train_loader):
+        if i%100==0:
+            print("i",i,time.time()-timer)
         indice=random.randint(0,1)
         data.to(device)
         state,points=batch_to_batch2(data,DEPART)
@@ -502,7 +503,11 @@ for i_episode in range(num_episodes):
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             reward = torch.tensor([reward], device=device)
             # Store the transition in memory
-            memory.push(data,state, action, samp,points,indice,next_state, reward)
+            if done:
+                memory.push(data,state, action, samp,points,indice,None, reward)
+            else:
+                memory.push(data,state, action, samp,points,indice,next_state, reward)                
+
 
             # Move to the next state
             state = next_state
