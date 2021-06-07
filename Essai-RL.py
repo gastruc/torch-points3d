@@ -331,7 +331,7 @@ def parcours(data,state,points,j):
         print("action",action)
         etapes+=1
         if action==0:
-            state,points=find_neighbor(general,state,samp,points,j)
+            state,points=find_neighbor(data,state,samp,points,j)
     if model_128.veri(state,j):
         print("vrai",2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
         return(2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
