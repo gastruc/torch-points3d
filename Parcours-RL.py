@@ -250,7 +250,7 @@ def parcours(data,state,points,j):
             samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
             result=policy_net(state,j,samp)
             print("max de result",result,max(result),torch.argmax(result))
-            l.append(max(result),torch.argmax(result),samp)
+            l.append((max(result),torch.argmax(result),samp))
         print("max de l",max(l))
         _,action,samp=max(l)
         if action==0:
