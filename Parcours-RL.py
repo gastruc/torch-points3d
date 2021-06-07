@@ -244,12 +244,13 @@ def test_epoch_128(device,random):
 def parcours(data,state,points,j):
     n_actions=64
     action=0
-    while action==0:
+    while action==0 and len(points)<128:
         l=[]
         for i in range (n_actions):
             with torch.no_grad():
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
                 result=policy_net(state,j,samp)
+                print(max(result),torch.argmax(result))
                 l.append((max(result),torch.argmax(result),samp))
         _,action,samp=max(l)
         if action==0:

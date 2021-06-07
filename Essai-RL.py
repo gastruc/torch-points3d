@@ -228,6 +228,7 @@ TARGET_UPDATE = 10
 n_actions = 2
 
 policy_net = DQN(128).to(device)
+policy_net.load_state_dict(torch.load("policy_net.pth"))
 target_net = DQN(128).to(device)
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
@@ -333,6 +334,7 @@ def parcours(data,state,points,j):
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
     if model_128.veri(state,j):
+        print(etapes,GAMMA**etapes)
         return(2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
     else:
         return(-1*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
@@ -485,16 +487,14 @@ def list_to_batch(data):
 proba=0.9
 train_loader = dataset.train_dataloader
 DEPART=64
-num_episodes = 3
-TARGET_UPDATE = 1
+num_episodes = 300
+TARGET_UPDATE = 10
 timer=time.time()
 for i_episode in range(num_episodes):
     # Initialize the environment and state
-    if i_episode%1==0:
+    if i_episode%10==0:
         print(i_episode)
     for i, data in enumerate(train_loader):
-        if i%10==0:
-            print("i",i,time.time()-timer)
         indice=random.randint(0,1)
         data.to(device)
         state,points=batch_to_batch2(data,DEPART)
