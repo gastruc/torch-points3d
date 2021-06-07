@@ -199,7 +199,7 @@ class DQN(nn.Module):
     
     
 Transition = namedtuple('Transition',
-                        ('state', 'action','samp', 'indice','next_state', 'reward'))
+                        ('general','state', 'action','samp','points' ,'indice','next_state', 'reward'))
 
 
 class ReplayMemory(object):
@@ -228,6 +228,9 @@ TARGET_UPDATE = 10
 n_actions = 2
 
 policy_net = DQN(128).to(device)
+target_net = DQN(128).to(device)
+target_net.load_state_dict(policy_net.state_dict())
+target_net.eval()
 
 optimizer = torch.optim.RMSprop(policy_net.parameters())
 memory = ReplayMemory(200)
@@ -278,7 +281,6 @@ def optimize_model():
     action_batch = torch.cat(batch.action)
     samp_batch = torch.cat(batch.samp)
     reward_batch = torch.cat(batch.reward)
-    print("reward batch",reward_batch)
     indice_batch=list(batch.indice)
 
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
@@ -287,7 +289,6 @@ def optimize_model():
     #print(policy_net(batch.state[0],batch.indice[0],samp_batch[0]))
     #print(torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))]).shape,action_batch.shape)
     state_action_values = (torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))])).gather(0, torch.squeeze(action_batch))
-    print(state_action_values[0])
 
     # Compute V(s_{t+1}) for all next states.
     # Expected values of actions for non_final_next_states are computed based
@@ -296,10 +297,10 @@ def optimize_model():
     # state value or 0 in case the state was final.
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
     #print(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))]))
-    inter=torch.cat([model_128.sortie(non_final_next_states[i]).x[indice_batch[non_final[i]]] for i in range (len(non_final_next_states))])
+    inter=(torch.cat([parcours(batch.general[non_final[i]],non_final_next_states[i],batch.points[non_final[i]],indice_batch[non_final[i]]) for i in range (len(non_final_next_states))]))
+    #inter=torch.cat([model_128.sortie(non_final_next_states[i]).x[indice_batch[non_final[i]]] for i in range (len(non_final_next_states))])
     print("inter",inter)
-    print("deuz",inter.max(0)[0].detach())
-    next_state_values[non_final_mask] =inter.max(0)[0].detach()
+    next_state_values[non_final_mask]=inter
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
     print(expected_state_action_values)
@@ -315,6 +316,28 @@ def optimize_model():
         param.grad.data.clamp_(-1, 1)
     optimizer.step()
 
+def parcours(data,state,points,j):
+    n_actions=64
+    action=0
+    etapes=0
+    while action==0:
+        l=[]
+        for i in range (n_actions):
+            samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
+            result=target_net(state,j,samp)
+            l.append((max(result),torch.argmax(result),samp))
+        _,action,samp=max(l)
+        print("action",action)
+        etapes+=1
+        if action==0:
+            state,points=find_neighbor(general,state,samp,points,j)
+    if model_128.veri(state,j):
+        print("vrai",2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
+        return(2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
+    else:
+        print("faux",-1*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
+        return(-1*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
+    
 NUM_WORKERS = 4     
 model_128 = PointNet2CLassifier()
 model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(128)+".pth"))
@@ -464,6 +487,7 @@ proba=0.9
 train_loader = dataset.train_dataloader
 DEPART=64
 num_episodes = 300
+TARGET_UPDATE = 10
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     if i_episode%1==0:
@@ -478,7 +502,7 @@ for i_episode in range(num_episodes):
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             reward = torch.tensor([reward], device=device)
             # Store the transition in memory
-            memory.push(state, action, samp,indice,next_state, reward)
+            memory.push(data,state, action, samp,points,indice,next_state, reward)
 
             # Move to the next state
             state = next_state
@@ -487,6 +511,8 @@ for i_episode in range(num_episodes):
             if done or next_state.x.shape[1]>128:
                 episode_durations.append(t + 1)
                 break
+                
+    target_net.load_state_dict(policy_net.state_dict())
 
 torch.save(policy_net.state_dict(), "policy_net.pth")
 print('Complete')
