@@ -330,10 +330,8 @@ def parcours(data,state,points,j):
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
     if model_128.veri(state,j):
-        print("vrai",2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
         return(2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
     else:
-        print("faux",-1*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
         return(-1*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
     
 NUM_WORKERS = 4     
