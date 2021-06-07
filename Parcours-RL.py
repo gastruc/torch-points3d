@@ -232,7 +232,7 @@ def test_epoch_128(device,random):
             data.to(device)
             state,points=batch_to_batch(data,random,j)
             state.to(device)
-            boole,conf=parcours(data,state,points)
+            boole,conf=parcours(data,state,points,j)
             print(boole,conf)
             booles.append(boole)
             confs.append(conf)
@@ -241,7 +241,7 @@ def test_epoch_128(device,random):
     print("Loss:",sum(conf)/len(conf))
 
         
-def parcours(data,state,points):
+def parcours(data,state,points,j):
     n_actions=64
     action=0
     while action==0:
