@@ -328,6 +328,7 @@ def parcours(data,state,points,j):
             with torch.no_grad():
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
                 result=target_net(state,j,samp)
+                print(result)
                 if max(result)>maxi:
                     action_max=torch.argmax(result)
                     samp_max=samp
