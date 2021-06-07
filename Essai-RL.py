@@ -278,6 +278,7 @@ def optimize_model():
     action_batch = torch.cat(batch.action)
     samp_batch = torch.cat(batch.samp)
     reward_batch = torch.cat(batch.reward)
+    print("reward batch",reward_batch)
     indice_batch=list(batch.indice)
 
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
