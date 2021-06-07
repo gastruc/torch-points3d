@@ -321,16 +321,18 @@ def parcours(data,state,points,j):
     action=0
     etapes=0
     while action==0 and len(points)<128:
-        l=[]
+        action_max=0
+        maxi=-100000
+        samp_max=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
         for i in range (n_actions):
             with torch.no_grad():
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
                 result=target_net(state,j,samp)
-                l.append((max(result),torch.argmax(result),samp))
-        try:
-            _,action,samp=max(l)
-        except:
-            print("error")
+                if max(result)>maxi:
+                    action_max=torch.argmax(result)
+                    samp_max=samp
+                    maxi=max(result)
+        action,samp=action_max,samp_max
         etapes+=1
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
