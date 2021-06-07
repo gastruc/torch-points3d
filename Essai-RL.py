@@ -248,14 +248,14 @@ def select_action(state,indice,p):
             # t.max(1) will return largest column value of each row.
             # second column on max result is index of where max element was
             # found, so we pick action with the larger expected reward.
-            samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
+            samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
             #return policy_net(state,indice,samp).max(1)[1].view(1, 1),samp
             return torch.tensor([[torch.argmax(policy_net(state,indice,samp))]], device=device, dtype=torch.long),samp
     else:
         if random.random()>p:
-            return torch.tensor([[1]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
+            return torch.tensor([[1]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device)
         else:
-            return torch.tensor([[0]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device, dtype=torch.long)
+            return torch.tensor([[0]], device=device, dtype=torch.long),torch.tensor([[random.random(),random.random(),random.random()]], device=device)
 
 
 episode_durations = []
