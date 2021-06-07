@@ -286,6 +286,7 @@ def optimize_model():
     #print(policy_net(batch.state[0],batch.indice[0],samp_batch[0]))
     #print(torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))]).shape,action_batch.shape)
     state_action_values = (torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))])).gather(0, torch.squeeze(action_batch))
+    print(state_action_values[0])
 
     # Compute V(s_{t+1}) for all next states.
     # Expected values of actions for non_final_next_states are computed based
@@ -298,6 +299,7 @@ def optimize_model():
     next_state_values[non_final_mask] =inter.max(0)[0].detach()
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
+    print(expected_state_action_values)
 
     # Compute Huber loss
     criterion = nn.SmoothL1Loss()
