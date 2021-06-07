@@ -133,6 +133,7 @@ model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(12
 model_128.to(device)
 model_128.eval()   
     
+NUM_WORKERS = 4
 BATCH_SIZE = 3
 policy_net = DQN(128).to(device)
 policy_net.load_state_dict(torch.load("policy_net.pth"))
