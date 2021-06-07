@@ -254,6 +254,38 @@ def parcours(data,state,points):
             state,points=find_neighbor(general,state,samp,points,1)
         
     return(model_128.veri(state,1))
+
+def get_min(general,samp,indice):
+    bidule=np.array(general.x.cpu()[indice])
+    samp2=np.array(samp.cpu())
+    l=[np.linalg.norm(bidule[j,:]-samp2) for j in range(len(bidule))]
+    #l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
+    return(np.argmin(l))       
+        
+def find_neighbor(general,state,samp,points,indice):
+    u=get_min(general,samp,indice)
+    points.append(u)
+    return(batch_to_batch3(general,points,indice),points)
+    
+def batch_to_batch3(data,l,j):
+    r"""Constructs a batch object from a python list holding
+    :class:`torch_geometric.data.Data` objects. 
+        """
+
+    keys = ['x','y','pos','grid_size']
+
+    batch = SimpleBatch()
+    batch.__data_class__ = data.__class__
+
+    for key in data.keys:
+        if key in ['y','grid_size']:
+            item = data[key]
+            batch[key]=item[[0,1]]
+        else:
+            item = data[key]
+            batch[key]=torch.cat((torch.unsqueeze(item[0,l,:],0),torch.unsqueeze(item[j,l,:],0)),axis=0)
+            #batch[key]=item[:,:128,:]
+    return batch.contiguous()
         
 test_epoch_128('cuda',64)
 
