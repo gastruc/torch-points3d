@@ -488,7 +488,7 @@ def list_to_batch(data):
 proba=0.95
 train_loader = dataset.train_dataloader
 DEPART=64
-num_episodes = 2
+num_episodes = 300
 TARGET_UPDATE = 1
 timer=time.time()
 for i_episode in range(num_episodes):
@@ -499,7 +499,6 @@ for i_episode in range(num_episodes):
         indice=random.randint(0,1)
         data.to(device)
         state,points=batch_to_batch2(data,DEPART)
-        print("chg")
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice,proba)
