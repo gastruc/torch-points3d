@@ -303,6 +303,7 @@ def optimize_model():
     next_state_values[non_final_mask]=inter
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
+    print(expected_state_action_values)
 
     # Compute Huber loss
     criterion = nn.SmoothL1Loss()
