@@ -505,6 +505,7 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice,proba)
+            print(action,samp)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             print("dru",len(points),points[-5:])
             reward = torch.tensor([reward], device=device)
