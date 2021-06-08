@@ -328,7 +328,6 @@ def parcours(data,state,points,j):
             with torch.no_grad():
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
                 result=target_net(state,j,samp)
-                print(result)
                 if max(result)>maxi:
                     action_max=torch.argmax(result)
                     samp_max=samp
@@ -337,8 +336,8 @@ def parcours(data,state,points,j):
         etapes+=1
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
+    print(etapes)
     if model_128.veri(state,j):
-        print(etapes,GAMMA**etapes)
         return(2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
     else:
         return(-1*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
