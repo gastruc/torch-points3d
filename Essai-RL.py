@@ -521,7 +521,7 @@ for i_episode in range(num_episodes):
                 
     target_net.load_state_dict(policy_net.state_dict())
 
-torch.save(policy_net.state_dict(), "policy_net.pth")
+torch.save(policy_net.state_dict(), "policy_net2.pth")
 print('Complete')
     
     
