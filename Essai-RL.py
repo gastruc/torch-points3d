@@ -505,7 +505,7 @@ for i_episode in range(num_episodes):
             # Select and perform an action
             action,samp = select_action(state,indice,proba)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
-            print("dru",len(batch.points),batch.points[0][-5:],batch.points[1][-5:],batch.points[2][-5:])
+            print("dru",len(points),points[-5:])
             reward = torch.tensor([reward], device=device)
             # Store the transition in memory
             if done:
