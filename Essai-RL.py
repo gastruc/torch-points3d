@@ -411,17 +411,17 @@ def step(general,state,samp,action,points,indice):
     else:
         print("Problème",action)
 
-def get_min(general,samp,indice):
-    bidule=np.array(general.x.cpu()[indice])
+def get_min(general,samp,indice,points):
+    ind=[i for i in range(len(general.x[0])) if not(i in points)]
+    print(len(ind))
+    bidule=np.array(general.x.cpu()[indice,ind,:])
     samp2=np.array(samp.cpu())
-    print("min",bidule[0],samp2,bidule[0,:]-samp2)
     l=[np.linalg.norm(bidule[j,:]-samp2) for j in range(len(bidule))]
     #l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
-    print(len(bidule),np.argmin(l))
-    return(np.argmin(l))       
+    return(ind[np.argmin(l)])       
         
 def find_neighbor(general,state,samp,points,indice):
-    u=get_min(general,samp,indice)
+    u=get_min(general,samp,indice,points)
     points.append(u)
     return(batch_to_batch3(general,points),points)
     
