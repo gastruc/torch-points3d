@@ -336,7 +336,7 @@ def parcours(data,state,points,j):
         etapes+=1
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
-    print(etapes)
+    print(etapes,len(points),(len(points)<128))
     if model_128.veri(state,j):
         return(2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
     else:
