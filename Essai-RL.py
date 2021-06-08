@@ -223,7 +223,6 @@ GAMMA = 0.999
 EPS_START = 0.9
 EPS_END = 0.05
 EPS_DECAY = 200
-TARGET_UPDATE = 10
 
 n_actions = 2
 
@@ -490,13 +489,13 @@ def list_to_batch(data):
 proba=0.9
 train_loader = dataset.train_dataloader
 DEPART=64
-num_episodes = 300
-TARGET_UPDATE = 10
+num_episodes = 2
+TARGET_UPDATE = 1
 timer=time.time()
 for i_episode in range(num_episodes):
     # Initialize the environment and state
     if i_episode%10==0:
-        print(i_episode)
+        print("épisode",i_episode)
     for i, data in enumerate(train_loader):
         indice=random.randint(0,1)
         data.to(device)
