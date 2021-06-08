@@ -282,7 +282,7 @@ def optimize_model():
     samp_batch = torch.cat(batch.samp)
     reward_batch = torch.cat(batch.reward)
     indice_batch=list(batch.indice)
-    print(len(batch.points),batch.points[0][-5:],batch.points[1][-5:],batch.points[2][-5:])
+    #print(len(batch.points),batch.points[0][-5:],batch.points[1][-5:],batch.points[2][-5:])
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
     # columns of actions taken. These are the actions which would've been taken
     # for each batch state according to policy_net
@@ -307,6 +307,7 @@ def optimize_model():
 
     # Compute Huber loss
     criterion = nn.SmoothL1Loss()
+    print("loss",state_action_values, expected_state_action_values)
     loss = criterion(state_action_values, expected_state_action_values)
 
     # Optimize the model
