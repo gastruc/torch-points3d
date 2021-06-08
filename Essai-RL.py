@@ -414,6 +414,7 @@ def step(general,state,samp,action,points,indice):
 def get_min(general,samp,indice):
     bidule=np.array(general.x.cpu()[indice])
     samp2=np.array(samp.cpu())
+    print("min",bidule[0],samp2,bidule[0,:]-samp2)
     l=[np.linalg.norm(bidule[j,:]-samp2) for j in range(len(bidule))]
     #l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
     return(np.argmin(l))       
@@ -505,7 +506,6 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice,proba)
-            print(action,samp)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             print("dru",len(points),points[-5:])
             reward = torch.tensor([reward], device=device)
