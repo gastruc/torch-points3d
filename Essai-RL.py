@@ -298,7 +298,7 @@ def optimize_model():
     # state value or 0 in case the state was final.
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
     #print(torch.cat([model_128(non_final_next_states[i])[batch.indice[non_final[i]]] for i in range (len(non_final_next_states))]))
-    inter=torch.tensor([parcours(batch.general[non_final[i]],non_final_next_states[i],batch.points[non_final[i]],indice_batch[non_final[i]]) for i in range (len(non_final_next_states))], device=device)
+    inter=torch.tensor([parcours(batch.general[non_final[i]],non_final_next_states[i],copy.deepcopy(batch.points[non_final[i]]),indice_batch[non_final[i]]) for i in range (len(non_final_next_states))], device=device)
     #inter=torch.cat([model_128.sortie(non_final_next_states[i]).x[indice_batch[non_final[i]]] for i in range (len(non_final_next_states))])
     next_state_values[non_final_mask]=inter
     # Compute the expected Q values
@@ -336,6 +336,7 @@ def parcours(data,state,points,j):
         etapes+=1
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
+    print("parcours",len(points),action,etapes)
     if model_128.veri(state,j):
         return(2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
     else:
@@ -504,7 +505,6 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice,proba)
-            print(action)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             print("dru",len(points),points[-5:])
             reward = torch.tensor([reward], device=device)
