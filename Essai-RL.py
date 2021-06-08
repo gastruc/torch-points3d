@@ -412,6 +412,7 @@ def step(general,state,samp,action,points,indice):
         print("Problème",action)
 
 def get_min(general,samp,indice):
+    print(general.x[indice][0],general.x.cpu()[indice][0],general.x.shape)
     bidule=np.array(general.x.cpu()[indice])
     samp2=np.array(samp.cpu())
     print("min",bidule[0],samp2,bidule[0,:]-samp2)
