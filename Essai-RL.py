@@ -22,7 +22,7 @@ import random
 from collections import namedtuple, deque
 from itertools import count
 import math
-
+import copy
 
 np.random.seed(22)
 
@@ -510,9 +510,9 @@ for i_episode in range(num_episodes):
             reward = torch.tensor([reward], device=device)
             # Store the transition in memory
             if done:
-                memory.push(data, state, action, samp, torch.clone(points), indice, None, reward)
+                memory.push(data, state, action, samp, copy.deepcopy(points), indice, None, reward)
             else:
-                memory.push(data, state, action, samp, torch.clone(points), indice, next_state, reward)                
+                memory.push(data, state, action, samp, copy.deepcopy(points), indice, next_state, reward)                
 
 
             # Move to the next state
