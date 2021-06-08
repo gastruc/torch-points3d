@@ -289,7 +289,7 @@ def optimize_model():
     # for each batch state according to policy_net
     #print(policy_net(batch.state[0],batch.indice[0],samp_batch[0]))
     #print(torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))]).shape,action_batch.shape)
-    print(policy_net(batch.state[0],batch.indice[0],samp_batch[0]),policy_net(batch.state[1],batch.indice[1],samp_batch[1]))
+    print(policy_net(batch.state[0],batch.indice[0],samp_batch[0]),policy_net(batch.state[0],batch.indice[0],samp_batch[1]))
     state_action_values = (torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))])).gather(0, torch.squeeze(action_batch))
 
     # Compute V(s_{t+1}) for all next states.
