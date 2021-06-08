@@ -282,7 +282,7 @@ def optimize_model():
     samp_batch = torch.cat(batch.samp)
     reward_batch = torch.cat(batch.reward)
     indice_batch=list(batch.indice)
-    print(batch.points[0][-5:],batch.points[1][-5:],batch.points[2][-5:])
+    print(len(batch.points),batch.points[0][-5:],batch.points[1][-5:],batch.points[2][-5:])
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
     # columns of actions taken. These are the actions which would've been taken
     # for each batch state according to policy_net
@@ -500,10 +500,12 @@ for i_episode in range(num_episodes):
         indice=random.randint(0,1)
         data.to(device)
         state,points=batch_to_batch2(data,DEPART)
+        print("chg")
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice,proba)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
+            print("dru",len(batch.points),batch.points[0][-5:],batch.points[1][-5:],batch.points[2][-5:])
             reward = torch.tensor([reward], device=device)
             # Store the transition in memory
             if done:
