@@ -288,7 +288,6 @@ def optimize_model():
     # for each batch state according to policy_net
     #print(policy_net(batch.state[0],batch.indice[0],samp_batch[0]))
     #print(torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))]).shape,action_batch.shape)
-    print(policy_net(batch.state[0],batch.indice[0],samp_batch[0]),policy_net(batch.state[0],batch.indice[0],samp_batch[1]))
     state_action_values = (torch.cat([policy_net(batch.state[i],batch.indice[i],samp_batch[i]) for i in range (len(batch.state))])).gather(0, torch.squeeze(action_batch))
 
     # Compute V(s_{t+1}) for all next states.
@@ -303,11 +302,9 @@ def optimize_model():
     next_state_values[non_final_mask]=inter
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch
-    print(expected_state_action_values)
 
     # Compute Huber loss
     criterion = nn.SmoothL1Loss()
-    print("loss",state_action_values, expected_state_action_values)
     loss = criterion(state_action_values, expected_state_action_values)
 
     # Optimize the model
@@ -337,7 +334,6 @@ def parcours(data,state,points,j):
         etapes+=1
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
-    print("parcours",len(points),action,etapes)
     if model_128.veri(state,j):
         return(2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
     else:
@@ -489,7 +485,7 @@ def list_to_batch(data):
             batch[key]=item
     return batch.contiguous()
 
-proba=0.9
+proba=0.95
 train_loader = dataset.train_dataloader
 DEPART=64
 num_episodes = 2
