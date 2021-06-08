@@ -504,14 +504,15 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice,proba)
+            print(action)
             next_state,points, reward,done= step(data,state,samp,action,points,indice)
             print("dru",len(points),points[-5:])
             reward = torch.tensor([reward], device=device)
             # Store the transition in memory
             if done:
-                memory.push(data,state, action, samp,points,indice,None, reward)
+                memory.push(data, state, action, samp, torch.clone(points), indice, None, reward)
             else:
-                memory.push(data,state, action, samp,points,indice,next_state, reward)                
+                memory.push(data, state, action, samp, torch.clone(points), indice, next_state, reward)                
 
 
             # Move to the next state
