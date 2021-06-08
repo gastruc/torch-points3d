@@ -413,7 +413,6 @@ def step(general,state,samp,action,points,indice):
 
 def get_min(general,samp,indice,points):
     ind=[i for i in range(len(general.x[0])) if not(i in points)]
-    print(len(ind))
     bidule=np.array(general.x.cpu()[indice,ind,:])
     samp2=np.array(samp.cpu())
     l=[np.linalg.norm(bidule[j,:]-samp2) for j in range(len(bidule))]
