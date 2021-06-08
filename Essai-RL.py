@@ -282,7 +282,7 @@ def optimize_model():
     samp_batch = torch.cat(batch.samp)
     reward_batch = torch.cat(batch.reward)
     indice_batch=list(batch.indice)
-
+    print(batch.points[0][-5:],batch.points[1][-5:],batch.points[2][-5:])
     # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
     # columns of actions taken. These are the actions which would've been taken
     # for each batch state according to policy_net
@@ -336,7 +336,6 @@ def parcours(data,state,points,j):
         etapes+=1
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
-    print(etapes,len(points),(points[:5]))
     if model_128.veri(state,j):
         return(2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
     else:
