@@ -228,7 +228,7 @@ TARGET_UPDATE = 10
 n_actions = 2
 
 policy_net = DQN(128).to(device)
-policy_net.load_state_dict(torch.load("policy_net.pth"))
+#policy_net.load_state_dict(torch.load("policy_net.pth"))
 target_net = DQN(128).to(device)
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
