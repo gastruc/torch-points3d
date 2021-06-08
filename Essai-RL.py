@@ -412,12 +412,12 @@ def step(general,state,samp,action,points,indice):
         print("Problème",action)
 
 def get_min(general,samp,indice):
-    print(general.x[indice][0],general.x.cpu()[indice][0],general.x.shape)
     bidule=np.array(general.x.cpu()[indice])
     samp2=np.array(samp.cpu())
     print("min",bidule[0],samp2,bidule[0,:]-samp2)
     l=[np.linalg.norm(bidule[j,:]-samp2) for j in range(len(bidule))]
     #l=[(tensor[pos,i,0]-tensor[pos,j,0])**2+(tensor[pos,i,1]-tensor[pos,j,1])**2+(tensor[pos,i,2]-tensor[pos,j,2])**2 for j in l]
+    print(len(bidule),np.argmin(l))
     return(np.argmin(l))       
         
 def find_neighbor(general,state,samp,points,indice):
