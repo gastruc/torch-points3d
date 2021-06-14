@@ -213,7 +213,7 @@ model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(12
 
 model_256 = PointNet2CLassifier()
 model_256.load_state_dict(torch.load("2021-04-26 10:28:01.360039/2021-04-26 17:25:16.894236/modele_"+str(256)+".pth"))
-for u in [128]:
+for u in [64]:
     NUM_WORKERS = 4
     BATCH_SIZE = 3
 

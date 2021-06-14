@@ -107,7 +107,7 @@ class PointNet2CLassifier(torch.nn.Module):
         
 l=[]
 
-for u in [128,256]:
+for u in [64]:
     l1=[]
     model = PointNet2CLassifier()
     
