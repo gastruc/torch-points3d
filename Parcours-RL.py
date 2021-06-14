@@ -138,7 +138,7 @@ model_128.eval()
 NUM_WORKERS = 4
 BATCH_SIZE = 3
 policy_net = DQN(128).to(device)
-policy_net.load_state_dict(torch.load("policy_net.pth"))
+policy_net.load_state_dict(torch.load("policy_net2.pth"))
 policy_net.to(device)
 policy_net.eval() 
 
@@ -251,9 +251,9 @@ def parcours(data,state,points,j):
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
                 result=policy_net(state,j,samp)
                 print(max(result),torch.argmax(result))
-                l.append((max(result),torch.argmax(result),samp))
+                l.append((max(result),torch.argmax(result),i,samp))
         try:
-            _,action,samp=max(l)
+            _,action,_,samp=max(l)
         except:
             print("error",l)
         if action==0:
