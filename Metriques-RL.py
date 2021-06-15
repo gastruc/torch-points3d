@@ -163,6 +163,22 @@ def test_epoch1_128(device,random,furthest,furthest_upgraded):
             model_128.forward(data)
             tracker.track(model_128)
         
+def test_epoch1_64(device,random,furthest,furthest_upgraded):
+    model_64.to(device)
+    model_64.eval()
+    tracker.reset("test")
+    test_loader = dataset.test_dataloaders[0]
+    iter_data_time = time.time()
+    
+    for i, data in enumerate(test_loader):
+        if len(data['x'])==3:
+            print(i,time.time() - iter_data_time)
+            t_data = time.time() - iter_data_time
+            data=batch_to_batch(data,random,furthest,furthest_upgraded)
+            data.to(device)
+            model_64.forward(data)
+            tracker.track(model_64)
+            
 def test_epoch_128(device):
     model_128.to(device)
     model_128.eval()
@@ -178,25 +194,10 @@ def test_epoch_128(device):
             model_128.forward(data)
             tracker.track(model_128)
 
-def test_epoch1_256(device):
-    model_256.to(device)
-    model_256.eval()
-    tracker.reset("test")
-    test_loader = dataset.test_dataloaders[0]
-    iter_data_time = time.time()
-    
-    for i, data in enumerate(test_loader):
-        if len(data['x'])==3:
-            t_data = time.time() - iter_data_time
-            iter_start_time = time.time()
-            data=batch_to_batch(data)
-            data.to(device)
-            model_256.forward(data)
-            tracker.track(model_256)
         
 def test_epoch_256(device):
-    model_256.to(device)
-    model_256.eval()
+    model_64.to(device)
+    model_64.eval()
     tracker.reset("test")
     test_loader = dataset.test_dataloaders[0]
     iter_data_time = time.time()
@@ -205,14 +206,14 @@ def test_epoch_256(device):
         t_data = time.time() - iter_data_time
         iter_start_time = time.time()
         data.to(device)
-        model_256.forward(data)
-        tracker.track(model_256)
+        model_64.forward(data)
+        tracker.track(model_64)
 
 model_128 = PointNet2CLassifier()
 model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(128)+".pth"))
 
-model_256 = PointNet2CLassifier()
-model_256.load_state_dict(torch.load("2021-04-26 10:28:01.360039/2021-04-26 17:25:16.894236/modele_"+str(256)+".pth"))
+model_64 = PointNet2CLassifier()
+model_64.load_state_dict(torch.load("2021-06-14 11:43:47.793938/modele_"+str(64)+".pth"))
 for u in [64]:
     NUM_WORKERS = 4
     BATCH_SIZE = 3
@@ -249,7 +250,7 @@ for u in [64]:
                     feat_names: [norm]
                     list_add_to_x: [%r]
                     delete_feats: [True]
-            """ % (os.path.join(DIR, "data"),MODELNET_VERSION, 128,USE_NORMAL, u,USE_NORMAL)
+            """ % (os.path.join(DIR, "data"),MODELNET_VERSION, 64,USE_NORMAL, u,USE_NORMAL)
 
     from omegaconf import OmegaConf
     params = OmegaConf.create(yaml_config)
@@ -269,8 +270,13 @@ for u in [64]:
 
     tracker = dataset.get_tracker(False, True)
     
-    print("Modèle 128:")
+    print("Modèle 128 testé en 64:")
     test_epoch_128('cuda')
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    print("Modèle 64 testé en 64:")
+    test_epoch_256('cuda')
     print(tracker.publish(0)['current_metrics']['acc'])
     print(tracker.publish(0)['current_metrics']['loss_class'])
     
@@ -322,7 +328,177 @@ for u in [64]:
                 num_workers=NUM_WORKERS, 
                 precompute_multi_scale=False
             )
-
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 74")
+    test_epoch1_128('cuda',74,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 84")
+    test_epoch1_128('cuda',84,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 94")
+    test_epoch1_128('cuda',94,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 104")
+    test_epoch1_128('cuda',104,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 69")
+    test_epoch1_128('cuda',69,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 79")
+    test_epoch1_128('cuda',79,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 74")
+    test_epoch1_64('cuda',74,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 84")
+    test_epoch1_64('cuda',84,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 94")
+    test_epoch1_64('cuda',94,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 104")
+    test_epoch1_64('cuda',104,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 69")
+    test_epoch1_64('cuda',69,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 79")
+    test_epoch1_64('cuda',79,0,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 64+10 plus loins:")
+    test_epoch1_128('cuda',64,10,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 64+15 plus loins:")
+    test_epoch1_128('cuda',64,15,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 64+20 plus loins:")
+    test_epoch1_128('cuda',64,20,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 64+30 plus loins:")
+    test_epoch1_128('cuda',64,30,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 64+40 plus loins:")
+    test_epoch1_128('cuda',64,40,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 64+50 plus loins:")
+    test_epoch1_128('cuda',64,50,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 64+60 plus loins:")
+    test_epoch1_128('cuda',64,60,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 128 testé sur 64+5 plus loins:")
+    test_epoch1_128('cuda',64,5,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 64+10 plus loins:")
+    test_epoch1_64('cuda',64,10,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 64+15 plus loins:")
+    test_epoch1_64('cuda',64,15,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 64+20 plus loins:")
+    test_epoch1_64('cuda',64,20,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 64+30 plus loins:")
+    test_epoch1_64('cuda',64,30,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 64+40 plus loins:")
+    test_epoch1_64('cuda',64,40,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 64+50 plus loins:")
+    test_epoch1_64('cuda',64,50,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 64+60 plus loins:")
+    test_epoch1_64('cuda',64,60,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    tracker = dataset.get_tracker(False, True)
+    print("Modèle 64 testé sur 64+5 plus loins:")
+    test_epoch1_64('cuda',64,5,0)
+    print(tracker.publish(0)['current_metrics']['acc'])
+    print(tracker.publish(0)['current_metrics']['loss_class'])
+    
+    
+"""
     tracker = dataset.get_tracker(False, True)
     print("Modèle 128 + 128 aléatoires:")
     #test_epoch1_128('cuda',256,0,0)
@@ -341,7 +517,9 @@ for u in [64]:
     print(tracker.publish(0)['current_metrics']['acc'])
     print(tracker.publish(0)['current_metrics']['loss_class'])
     
-    yaml_config = """
+    yaml_config = 
+"""
+"""
             task: classification
             class: modelnet.ModelNetDataset
             name: modelnet
@@ -372,7 +550,8 @@ for u in [64]:
                     feat_names: [norm]
                     list_add_to_x: [%r]
                     delete_feats: [True]
-            """ % (os.path.join(DIR, "data"),MODELNET_VERSION, 256,USE_NORMAL, 256,USE_NORMAL)
+            """
+"""% (os.path.join(DIR, "data"),MODELNET_VERSION, 256,USE_NORMAL, 256,USE_NORMAL)
 
     from omegaconf import OmegaConf
     params = OmegaConf.create(yaml_config)
@@ -392,14 +571,14 @@ for u in [64]:
 
     tracker = dataset.get_tracker(False, True)
     print("Modèle 256:")
-    test_epoch_256('cuda')
-    print(tracker.publish(0)['current_metrics']['acc'])
-    print(tracker.publish(0)['current_metrics']['loss_class'])
+    #test_epoch_256('cuda')
+    #print(tracker.publish(0)['current_metrics']['acc'])
+    #print(tracker.publish(0)['current_metrics']['loss_class'])
     
     
     
     
-    
+"""
     
 
     
