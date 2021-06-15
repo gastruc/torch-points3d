@@ -73,7 +73,6 @@ def get_list_upgraded(tensor,k,l1,l2,l3):
         u,v=max(norme2)
         l3.append(v)
         print("done",time.time() - iter_data_time)
-    print("finish",time.time() - iter_data_time)
     return (l1,l2,l3)
 
 def get_list_random(k,l):
@@ -156,7 +155,6 @@ def test_epoch1_128(device,random,furthest,furthest_upgraded):
     
     for i, data in enumerate(test_loader):
         if len(data['x'])==3:
-            print(i,time.time() - iter_data_time)
             t_data = time.time() - iter_data_time
             data=batch_to_batch(data,random,furthest,furthest_upgraded)
             data.to(device)
@@ -172,7 +170,6 @@ def test_epoch1_64(device,random,furthest,furthest_upgraded):
     
     for i, data in enumerate(test_loader):
         if len(data['x'])==3:
-            print(i,time.time() - iter_data_time)
             t_data = time.time() - iter_data_time
             data=batch_to_batch(data,random,furthest,furthest_upgraded)
             data.to(device)
