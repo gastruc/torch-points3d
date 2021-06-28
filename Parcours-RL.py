@@ -255,6 +255,7 @@ def parcours(data,state,points,j):
                 l.append((max(result),torch.argmax(result),i,samp))
         try:
             _,action,_,samp=max(l)
+            print("action",action)
         except:
             print("error",l)
         if action==0:

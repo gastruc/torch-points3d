@@ -341,7 +341,7 @@ def parcours(data,state,points,j):
     
 NUM_WORKERS = 4     
 model_128 = PointNet2CLassifier()
-model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(128)+".pth"))
+model_128.load_state_dict(torch.load("2021-06-14 11:43:47.793938/modele_"+str(64)+".pth"))
 model_128.to(device)
 model_128.eval()
 
@@ -493,8 +493,10 @@ TARGET_UPDATE = 1
 timer=time.time()
 for i_episode in range(num_episodes):
     # Initialize the environment and state
-    if i_episode%10==0:
+    if i_episode%5==0:
         print("épisode",i_episode)
+        torch.save(policy_net.state_dict(), "policy_net_64.pth")
+        print("Saved")
     for i, data in enumerate(train_loader):
         indice=random.randint(0,1)
         data.to(device)
