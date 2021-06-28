@@ -230,14 +230,15 @@ def test_epoch_128(device,random):
     
     for i, data in enumerate(test_loader):
         for j in range (len(data['x'])):
-            t_data = time.time() - iter_data_time
-            data.to(device)
-            state,points=batch_to_batch(data,random,j)
-            state.to(device)
-            boole,conf=parcours(data,state,points,1)
-            print(boole,conf)
-            booles.append(boole)
-            confs.append(conf)
+            with torch.no_grad():
+                t_data = time.time() - iter_data_time
+                data.to(device)
+                state,points=batch_to_batch(data,random,j)
+                state.to(device)
+                boole,conf=parcours(data,state,points,1)
+                print(boole,conf)
+                booles.append(boole)
+                confs.append(conf)
             
     print("Accuracy:",sum(booles)/len(booles))
     print("Loss:",sum(conf)/len(conf))
