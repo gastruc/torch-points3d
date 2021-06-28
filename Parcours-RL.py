@@ -248,7 +248,6 @@ def parcours(data,state,points,j):
     action=0
     while action==0 and len(points)<128:
         l=[]
-        print(state['x'][1,-1,:])
         for i in range (n_actions):
             with torch.no_grad():
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
@@ -257,7 +256,7 @@ def parcours(data,state,points,j):
                 l.append((max(result),torch.argmax(result),i,samp))
         try:
             _,action,_,samp=max(l)
-            print("action",action)
+            #print("action",action)
         except:
             print("error",l)
         if action==0:
