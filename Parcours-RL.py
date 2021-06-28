@@ -99,6 +99,7 @@ class PointNet2CLassifier(torch.nn.Module):
     def backward(self):
          self.loss_class.backward()
 
+
             
 class DQN(nn.Module):
 
@@ -251,8 +252,10 @@ def parcours(data,state,points,j):
             with torch.no_grad():
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
                 result=policy_net(state,j,samp)
+                print(2)
                 print(torch.max(result),torch.argmax(result))
                 l.append((max(result),torch.argmax(result),i,samp))
+                print(3)
         try:
             _,action,_,samp=max(l)
             print("action",action)
