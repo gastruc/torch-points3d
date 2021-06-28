@@ -237,7 +237,7 @@ def test_epoch_128(device,random):
             data.to(device)
             state,points=batch_to_batch(data,random,j)
             state.to(device)
-            boole,conf=parcours(data,state,points,j)
+            boole,conf=parcours(data,state,points,1)
             print(boole,conf)
             booles.append(boole)
             confs.append(conf)
@@ -255,10 +255,8 @@ def parcours(data,state,points,j):
             with torch.no_grad():
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
                 result=policy_net(state,j,samp)
-                print(2)
                 print(torch.max(result),torch.argmax(result))
                 l.append((max(result),torch.argmax(result),i,samp))
-                print(3)
         try:
             _,action,_,samp=max(l)
             print("action",action)
