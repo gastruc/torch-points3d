@@ -335,11 +335,13 @@ def parcours(data,state,points,j):
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
     if model_128.veri(state,j):
+        acc.append(1)
         if etapes >=5:
             return(10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
         return(10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
 
     else:
+        acc.append(0)
         if etapes >=5:
             return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
         return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
@@ -505,6 +507,7 @@ for i_episode in range(num_episodes):
         print("épisode",i_episode)
         torch.save(policy_net.state_dict(), "policy_net_modif.pth")
         print("Saved")
+    acc=[]
     for i, data in enumerate(train_loader):
         indice=random.randint(0,1)
         data.to(device)
@@ -513,6 +516,8 @@ for i_episode in range(num_episodes):
             # Select and perform an action
             action,samp = select_action(state,indice,proba)
             next_state,points, reward,done= step(data,state,samp,action,points,indice,t)
+            if done:
+                acc.append(reward)
             reward = torch.tensor([reward], device=device)
             # Store the transition in memory
             if done:
@@ -530,6 +535,7 @@ for i_episode in range(num_episodes):
                 break
                 
     target_net.load_state_dict(policy_net.state_dict())
+    print("Accuracy train",sum(acc)/len(acc))
 
 torch.save(policy_net.state_dict(), "policy_net_modif.pth")
 print('Complete')
