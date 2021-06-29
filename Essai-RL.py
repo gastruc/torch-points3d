@@ -335,9 +335,14 @@ def parcours(data,state,points,j):
         if action==0:
             state,points=find_neighbor(data,state,samp,points,j)
     if model_128.veri(state,j):
-        return(2*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
+        if etapes >=5:
+            return(10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
+        return(10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
+
     else:
-        return(-1*(GAMMA**etapes)-0.01*(1-GAMMA**etapes)/(1-GAMMA))
+        if etapes >=5:
+            return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
+        return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
     
 NUM_WORKERS = 4     
 model_128 = PointNet2CLassifier()
@@ -394,17 +399,20 @@ dataset.create_dataloaders(
                 precompute_multi_scale=False
             )    
 
-def step(general,state,samp,action,points,indice):
+def step(general,state,samp,action,points,indice,t):
     if action==0:
     #if False:
         next_state,points=find_neighbor(general,state,samp,points,indice)
-        return(next_state,points,-0.01,False)
+        if t>5:
+            return(next_state,points,-0.01,False)
+        return(next_state,points,0.01,False)
+        
     elif action==1:
     #elif True:
         if model_128.veri(state,indice):
-            return(state,points,2,True)
+            return(state,points,10,True)
         else:
-            return(state,points,-1,True)
+            return(state,points,-10,True)
     else:
         print("Problème",action)
 
@@ -495,7 +503,7 @@ for i_episode in range(num_episodes):
     # Initialize the environment and state
     if i_episode%5==0:
         print("épisode",i_episode)
-        torch.save(policy_net.state_dict(), "policy_net_64.pth")
+        torch.save(policy_net.state_dict(), "policy_net_modif.pth")
         print("Saved")
     for i, data in enumerate(train_loader):
         indice=random.randint(0,1)
@@ -504,7 +512,7 @@ for i_episode in range(num_episodes):
         for t in count():
             # Select and perform an action
             action,samp = select_action(state,indice,proba)
-            next_state,points, reward,done= step(data,state,samp,action,points,indice)
+            next_state,points, reward,done= step(data,state,samp,action,points,indice,t)
             reward = torch.tensor([reward], device=device)
             # Store the transition in memory
             if done:
@@ -523,7 +531,7 @@ for i_episode in range(num_episodes):
                 
     target_net.load_state_dict(policy_net.state_dict())
 
-torch.save(policy_net.state_dict(), "policy_net2.pth")
+torch.save(policy_net.state_dict(), "policy_net_modif.pth")
 print('Complete')
     
     
