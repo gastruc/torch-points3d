@@ -336,15 +336,17 @@ def parcours(data,state,points,j):
             state,points=find_neighbor(data,state,samp,points,j)
     if model_128.veri(state,j):
         acc.append(1)
-        if etapes >=5:
-            return(10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
-        return(10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
+        #if etapes >=5:
+            #return(10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
+        #return(10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
+        return(10*(GAMMA**etapes)+0.1*(1-GAMMA**etapes)/(1-GAMMA))
 
     else:
         acc.append(0)
-        if etapes >=5:
-            return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
-        return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
+        #if etapes >=5:
+            #return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
+        #return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
+        return(-10*(GAMMA**etapes)+0.1*(1-GAMMA**etapes)/(1-GAMMA))
     
 NUM_WORKERS = 4     
 model_128 = PointNet2CLassifier()
@@ -505,7 +507,7 @@ for i_episode in range(num_episodes):
     # Initialize the environment and state
     if i_episode%5==0:
         print("épisode",i_episode)
-        torch.save(policy_net.state_dict(), "policy_net_modif.pth")
+        torch.save(policy_net.state_dict(), "policy_net_modif2.pth")
         print("Saved")
     acc=[]
     for i, data in enumerate(train_loader):
@@ -537,7 +539,7 @@ for i_episode in range(num_episodes):
     target_net.load_state_dict(policy_net.state_dict())
     print("Accuracy train",sum(acc)/len(acc))
 
-torch.save(policy_net.state_dict(), "policy_net_modif.pth")
+torch.save(policy_net.state_dict(), "policy_net_modif2.pth")
 print('Complete')
     
     
