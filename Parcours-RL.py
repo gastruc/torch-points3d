@@ -133,14 +133,14 @@ def get_list_random(k,l):
     return (list(np.random.randint(l, size=k)),list(np.random.randint(l, size=k)),list(np.random.randint(l, size=k)))
 
 model_128 = PointNet2CLassifier()
-model_128.load_state_dict(torch.load("2021-04-26 10:28:01.360039/modele_"+str(128)+".pth"))
+model_128.load_state_dict(torch.load("2021-06-14 11:43:47.793938/modele_"+str(64)+".pth"))
 model_128.to(device)
 model_128.eval()   
     
 NUM_WORKERS = 4
 BATCH_SIZE = 3
 policy_net = DQN(128).to(device)
-policy_net.load_state_dict(torch.load("policy_net_modif.pth"))
+policy_net.load_state_dict(torch.load("policy_net_64.pth"))
 policy_net.to(device)
 policy_net.eval() 
 
