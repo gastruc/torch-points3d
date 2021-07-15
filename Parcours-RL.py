@@ -212,7 +212,7 @@ def batch_to_batch(data,random,j):
     for key in data.keys:
         if key in ['y','grid_size']:
             item = data[key]
-            batch[key]=item[[0,1]]
+            batch[key]=item[[0,j]]
         else:
             item = data[key]
             batch[key]=torch.cat((torch.unsqueeze(item[0,l1,:],0),torch.unsqueeze(item[j,l1,:],0)),axis=0)
@@ -235,7 +235,7 @@ def test_epoch_128(device,random):
                 data.to(device)
                 state,points=batch_to_batch(data,random,j)
                 state.to(device)
-                boole,conf=parcours(data,state,points,1)
+                boole,conf=parcours(data,state,points,j)
                 print(boole,conf)
                 booles.append(boole)
                 confs.append(conf)
@@ -255,7 +255,7 @@ def parcours(data,state,points,j):
         for i in range (n_actions):
             with torch.no_grad():
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
-                result=policy_net(state,j,samp)
+                result=policy_net(state,1,samp)
                 moy+=result[1]
                 l.append((result[0],0,i,samp))
         l.append((moy/n_actions,1,i,samp))
@@ -265,7 +265,7 @@ def parcours(data,state,points,j):
         except:
             print("error",l)
         if action==0:
-            state,points=find_neighbor(data,state,samp,points,1)
+            state,points=find_neighbor(data,state,samp,points,j)
         if etapess>1:
             print("on a samplé",etapess)
         
@@ -296,7 +296,7 @@ def batch_to_batch3(data,l,j):
     for key in data.keys:
         if key in ['y','grid_size']:
             item = data[key]
-            batch[key]=item[[0,1]]
+            batch[key]=item[[0,j]]
         else:
             item = data[key]
             batch[key]=torch.cat((torch.unsqueeze(item[0,l,:],0),torch.unsqueeze(item[j,l,:],0)),axis=0)

@@ -313,7 +313,7 @@ def optimize_model():
     for param in policy_net.parameters():
         param.grad.data.clamp_(-1, 1)
     optimizer.step()
-
+"""
 def parcours(data,state,points,j):
     n_actions=64
     action=0
@@ -347,7 +347,48 @@ def parcours(data,state,points,j):
             #return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
         #return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
         return(-10*(GAMMA**etapes)+0.1*(1-GAMMA**etapes)/(1-GAMMA))
+"""
+
+
+def parcours(data,state,points,j):
+    n_actions=64
+    action=0
+    etapess=0
+    moy=0
+    while action==0 and len(points)<128:
+        etapess+=1
+        l=[]
+        for i in range (n_actions):
+            with torch.no_grad():
+                samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
+                result=policy_net(state,j,samp)
+                moy+=result[1]
+                l.append((result[0],0,i,samp))
+        l.append((moy/n_actions,1,i,samp))
+        try:
+            _,action,_,samp=max(l)
+            #print("action",action)
+        except:
+            print("error",l)
+        if action==0:
+            state,points=find_neighbor(data,state,samp,points,j)
+    if etapess>1:
+        print("on a samplé",etapess)
     
+    if model_128.veri(state,j):
+        acc.append(1)
+        #if etapes >=5:
+            #return(10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
+        #return(10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
+        return(10*(GAMMA**etapes)+0.1*(1-GAMMA**etapes)/(1-GAMMA))
+
+    else:
+        acc.append(0)
+        #if etapes >=5:
+            #return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**(5))/(1-GAMMA)-0.01*(1-GAMMA**(etapes-5))/(1-GAMMA))
+        #return(-10*(GAMMA**etapes)+0.01*(1-GAMMA**etapes)/(1-GAMMA))
+        return(-10*(GAMMA**etapes)+0.1*(1-GAMMA**etapes)/(1-GAMMA))
+
 NUM_WORKERS = 4     
 model_128 = PointNet2CLassifier()
 model_128.load_state_dict(torch.load("2021-06-14 11:43:47.793938/modele_"+str(64)+".pth"))
