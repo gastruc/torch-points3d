@@ -247,14 +247,18 @@ def test_epoch_128(device,random):
 def parcours(data,state,points,j):
     n_actions=64
     action=0
+    etapess=0
+    moy=0
     while action==0 and len(points)<128:
+        etapess+=1
         l=[]
         for i in range (n_actions):
             with torch.no_grad():
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
                 result=policy_net(state,j,samp)
-                print(result)
-                l.append((max(result),torch.argmax(result),i,samp))
+                moy+=result[1]
+                l.append((result[0],0,i,samp))
+        l.append((moy/n_actions,1,i,samp))
         try:
             _,action,_,samp=max(l)
             #print("action",action)
@@ -262,6 +266,8 @@ def parcours(data,state,points,j):
             print("error",l)
         if action==0:
             state,points=find_neighbor(data,state,samp,points,1)
+        if etapess>1:
+            print("on a samplé",etapess)
         
     return(model_128.veri(state,1))
 
