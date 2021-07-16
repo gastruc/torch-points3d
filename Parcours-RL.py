@@ -257,6 +257,7 @@ def parcours(data,state,points,j):
                 samp=torch.tensor([[random.random(),random.random(),random.random()]], device=device)
                 result=policy_net(state,1,samp)
                 moy+=result[1]
+                print(result,moy/(i+1))
                 l.append((result[0],0,i,samp))
         l.append((moy/n_actions,1,i,samp))
         try:
